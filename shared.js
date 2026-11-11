@@ -6,6 +6,8 @@
  * 3. 71週年完整 94 筆真實芳名錄測試資料（供大屏版面壓力測試與預覽）
  */
 
+const DEFAULT_GAS_URL = 'https://script.google.com/macros/s/AKfycbwWCILrHwW7qYhm8MuHEoVnBHrX7ckghNATX503D7why7Lt-FrXWnQ7XIPPCt8oVdB2/exec';
+
 const TP72_STORAGE_KEYS = {
   GAS_URL: 'tp72_gas_url',
   LOCAL_ITEMS: 'tp72_local_donations_v1',
@@ -248,7 +250,7 @@ const DEMO_71_DONATIONS = [
 ];
 
 /**
- * 取得或設定 GAS 網址（亦支援從網址列參數 ?gas=https://... 自動帶入並記憶）
+ * 取得或設定 GAS 網址（預設已內建學校專屬 GAS 網址，亦支援從網址列參數 ?gas=https://... 覆蓋）
  */
 function getGasUrl() {
   const urlParams = new URLSearchParams(window.location.search);
@@ -257,7 +259,8 @@ function getGasUrl() {
     localStorage.setItem(TP72_STORAGE_KEYS.GAS_URL, paramGas.trim());
     return paramGas.trim();
   }
-  return (localStorage.getItem(TP72_STORAGE_KEYS.GAS_URL) || '').trim();
+  const saved = (localStorage.getItem(TP72_STORAGE_KEYS.GAS_URL) || '').trim();
+  return saved || DEFAULT_GAS_URL;
 }
 
 function setGasUrl(url) {

@@ -1007,9 +1007,37 @@
 
       searchInput.addEventListener('input', renderTable);
 
+      // 頁面開啟時自動從預設 GAS 雲端讀取最新清單
+      async function initLoadFromGas() {
+        const url = getGasUrl();
+        if (!url) return;
+        try {
+          lastSyncTimeText.textContent = '☁️ 正在從 Google 試算表載入最新名單...';
+          const sep = url.includes('?') ? '&' : '?';
+          const res = await fetch(`${url}${sep}action=list&_t=${Date.now()}`);
+          const data = await res.json();
+          if (data && data.status === 'ok') {
+            if (data.spreadsheetUrl) {
+              const btnSheet = document.getElementById('btnOpenSheet');
+              btnSheet.href = data.spreadsheetUrl;
+              btnSheet.style.display = 'inline-flex';
+            }
+            if (Array.isArray(data.items) && data.items.length > 0) {
+              donations = data.items;
+              saveLocalDonations(donations);
+              renderTable();
+            }
+            lastSyncTimeText.textContent = `☁️ 已連線雲端試算表 (共 ${data.items ? data.items.length : 0} 筆)`;
+          }
+        } catch (e) {
+          lastSyncTimeText.textContent = '⚠️ 雲端連線待命，目前顯示本機清單';
+        }
+      }
+
       // 初始渲染
       renderTable();
       updateLivePreview();
+      initLoadFromGas();
     })();
   </script>
 </body>
