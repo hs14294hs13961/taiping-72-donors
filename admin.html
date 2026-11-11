@@ -1,0 +1,1016 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>太平國小 72週年校慶 - 捐款芳名錄後台管理系統</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Noto+Serif+TC:wght@700;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --red-main: #c62020;
+      --red-dark: #8e1111;
+      --gold: #ffd54f;
+      --bg-page: #f7f4f4;
+      --card-bg: #ffffff;
+      --border: #e2d9d9;
+      --text-main: #221818;
+      --text-muted: #6e5d5d;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Noto Sans TC', sans-serif;
+      background: var(--bg-page);
+      color: var(--text-main);
+      min-height: 100vh;
+      padding-bottom: 48px;
+    }
+
+    /* 頂部導覽列 */
+    .navbar {
+      background: linear-gradient(90deg, #8e1111 0%, #c62020 50%, #8e1111 100%);
+      color: #fff;
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 3px solid var(--gold);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      position: sticky;
+      top: 0;
+      z-index: 40;
+    }
+
+    .nav-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .nav-logo {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: #fff;
+      padding: 3px;
+      object-fit: contain;
+    }
+
+    .nav-title h1 {
+      font-size: 20px;
+      font-weight: 900;
+      letter-spacing: 0.04em;
+    }
+
+    .nav-title p {
+      font-size: 13px;
+      color: #ffe082;
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 9px 16px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: all 0.15s ease;
+      text-decoration: none;
+    }
+
+    .btn-gold {
+      background: var(--gold);
+      color: #3e1010;
+      border-color: #ffca28;
+    }
+    .btn-gold:hover {
+      background: #ffca28;
+      transform: translateY(-1px);
+    }
+
+    .btn-outline-light {
+      background: rgba(255, 255, 255, 0.12);
+      color: #fff;
+      border-color: rgba(255, 255, 255, 0.4);
+    }
+    .btn-outline-light:hover {
+      background: rgba(255, 255, 255, 0.25);
+    }
+
+    .btn-primary {
+      background: var(--red-main);
+      color: #fff;
+      font-size: 16px;
+      padding: 12px 24px;
+      box-shadow: 0 4px 12px rgba(198, 32, 32, 0.3);
+    }
+    .btn-primary:hover {
+      background: #a81616;
+    }
+
+    .btn-secondary {
+      background: #f0eaea;
+      color: #3d2c2c;
+      border-color: #d5c7c7;
+    }
+    .btn-secondary:hover {
+      background: #e3d8d8;
+    }
+
+    .btn-danger {
+      background: #fff0f0;
+      color: #c62828;
+      border-color: #ffcdd2;
+    }
+    .btn-danger:hover {
+      background: #ffcdd2;
+    }
+
+    /* 主內容雙欄佈局 */
+    .container {
+      max-width: 1360px;
+      margin: 24px auto;
+      padding: 0 20px;
+      display: grid;
+      grid-template-columns: 440px 1fr;
+      gap: 24px;
+      align-items: start;
+    }
+
+    @media (max-width: 1024px) {
+      .container {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .card {
+      background: var(--card-bg);
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+      padding: 22px;
+      margin-bottom: 20px;
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 2px solid #f2ebeb;
+      padding-bottom: 12px;
+      margin-bottom: 18px;
+    }
+
+    .card-title {
+      font-size: 18px;
+      font-weight: 900;
+      color: var(--red-dark);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 6px;
+      color: #3d2929;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 11px 14px;
+      font-size: 16px;
+      border: 2px solid #d8caca;
+      border-radius: 8px;
+      font-family: inherit;
+      transition: border-color 0.15s;
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: var(--red-main);
+      box-shadow: 0 0 0 3px rgba(198, 32, 32, 0.12);
+    }
+
+    /* 快速標籤按鈕群 */
+    .quick-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 8px;
+    }
+
+    .chip {
+      background: #fdf6f6;
+      border: 1px solid #e6cccc;
+      color: #6e2c2c;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 12.5px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.12s;
+    }
+
+    .chip:hover {
+      background: var(--red-main);
+      color: #fff;
+      border-color: var(--red-main);
+    }
+
+    /* 即時紅紙預覽盒 */
+    .live-preview-box {
+      background: #fff8f8;
+      border: 1.5px dashed #d32f2f;
+      border-radius: 10px;
+      padding: 14px;
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .preview-strip {
+      background: linear-gradient(180deg, #d62424 0%, #b71717 100%);
+      border: 2px solid #ffd54f;
+      border-radius: 6px;
+      padding: 10px 16px;
+      color: #140303;
+      font-family: 'Noto Serif TC', 'DFKai-SB', '標楷體', serif;
+      font-weight: 900;
+      min-width: 110px;
+      text-align: center;
+      box-shadow: 0 4px 10px rgba(183, 23, 23, 0.25);
+    }
+
+    /* 統計資訊卡 */
+    .stats-bar {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .stat-item {
+      background: #fdf8f8;
+      border: 1px solid #eddada;
+      border-radius: 10px;
+      padding: 12px 14px;
+      text-align: center;
+    }
+
+    .stat-label {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: 700;
+    }
+
+    .stat-value {
+      font-size: 22px;
+      font-weight: 900;
+      color: var(--red-main);
+      margin-top: 2px;
+    }
+
+    /* 表格樣式 */
+    .table-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .search-input {
+      padding: 8px 14px;
+      border: 1.5px solid #d8caca;
+      border-radius: 8px;
+      font-size: 14px;
+      width: 260px;
+    }
+
+    .table-wrapper {
+      max-height: 620px;
+      overflow-y: auto;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14.5px;
+    }
+
+    thead {
+      background: #f5ecec;
+      position: sticky;
+      top: 0;
+      z-index: 5;
+    }
+
+    th, td {
+      padding: 11px 12px;
+      text-align: left;
+      border-bottom: 1px solid #eee4e4;
+    }
+
+    th {
+      font-weight: 900;
+      color: #4a2c2c;
+      font-size: 13px;
+    }
+
+    tbody tr:hover {
+      background: #fff9f9;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .badge-cash {
+      background: #ffebee;
+      color: #c62828;
+      border: 1px solid #ffcdd2;
+    }
+
+    .badge-goods {
+      background: #e8f5e9;
+      color: #2e7d32;
+      border: 1px solid #c8e6c9;
+    }
+
+    /* 狀態通知列 */
+    .status-banner {
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 13.5px;
+      font-weight: 700;
+      margin-bottom: 14px;
+      display: none;
+    }
+    .status-banner.success {
+      display: block;
+      background: #e8f5e9;
+      color: #1b5e20;
+      border: 1px solid #a5d6a7;
+    }
+    .status-banner.error {
+      display: block;
+      background: #ffebee;
+      color: #b71c1c;
+      border: 1px solid #ef9a9a;
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-left">
+      <img src="太平國小_校徽.png" alt="太平國小校徽" class="nav-logo" />
+      <div class="nav-title">
+        <h1>太平國小 72週年校慶 — 捐款芳名錄輸入後台</h1>
+        <p id="connectionBadge">🟢 本機即時連動中（輸入後大屏 5 秒內自動更新）</p>
+      </div>
+    </div>
+    <div class="nav-actions">
+      <a href="index.html" target="_blank" class="btn btn-gold">
+        🖥️ 開啟大屏展示畫面 (投影用)
+      </a>
+    </div>
+  </nav>
+
+  <div class="container">
+    <!-- 左欄：快速輸入表單 & 雲端 GAS 設定 -->
+    <div>
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title" id="formTitle">✍️ 新增捐款 / 捐贈物資</div>
+          <button class="btn btn-secondary" id="btnCancelEdit" style="display:none; padding:4px 10px; font-size:12px;">取消修改</button>
+        </div>
+
+        <div id="formAlert" class="status-banner"></div>
+
+        <form id="donationForm">
+          <input type="hidden" id="editId" value="" />
+
+          <div class="form-group">
+            <label class="form-label" for="inputDonor">1. 捐款人姓名或單位職稱 *</label>
+            <input
+              type="text"
+              id="inputDonor"
+              class="form-input"
+              placeholder="例如：黃春嫺校長、校友 劉華明先生、關西鎮農會"
+              required
+              autocomplete="off"
+            />
+            <div class="quick-tags">
+              <span class="chip" data-prefix="校友 ">+ 校友</span>
+              <span class="chip" data-prefix="家長會">+ 家長會</span>
+              <span class="chip" data-prefix="前家長會長 ">+ 前家長會長</span>
+              <span class="chip" data-prefix="東平社區發展協會">+ 東平社區協會</span>
+              <span class="chip" data-prefix="東平里">+ 東平里</span>
+              <span class="chip" data-prefix="本校不具名家長">+ 本校不具名家長</span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="inputRaw">2. 捐款金額（純數字自動轉國字大寫）或捐贈物資 *</label>
+            <input
+              type="text"
+              id="inputRaw"
+              class="form-input"
+              placeholder="輸入數字如 1000，或輸入物資如：仙草茶二桶"
+              required
+              autocomplete="off"
+            />
+            <div class="quick-tags">
+              <span class="chip" data-amount="500">$500</span>
+              <span class="chip" data-amount="1000">$1,000</span>
+              <span class="chip" data-amount="2000">$2,000</span>
+              <span class="chip" data-amount="3000">$3,000</span>
+              <span class="chip" data-amount="5000">$5,000</span>
+              <span class="chip" data-amount="6000">$6,000</span>
+              <span class="chip" data-amount="10000">$10,000</span>
+              <span class="chip" data-amount="20000">$20,000</span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="inputDisplay">3. 大屏紅榜實際顯示文字（自動產生，可手動微調）</label>
+            <input
+              type="text"
+              id="inputDisplay"
+              class="form-input"
+              placeholder="例如：禮金壹仟元整"
+              required
+            />
+          </div>
+
+          <!-- 即時預覽區 -->
+          <div class="live-preview-box">
+            <div>
+              <div style="font-size:12px; font-weight:700; color:#8e1111; margin-bottom:4px;">👀 大屏紅紙即時預覽：</div>
+              <div style="font-size:14px; color:#333;">
+                感謝：<strong id="prevDonorText" style="color:#b71c1c;">（請輸入捐款人）</strong><br/>
+                捐贈：<strong id="prevGiftText" style="color:#b71c1c;">（請輸入金額或物資）</strong>
+              </div>
+            </div>
+            <div class="preview-strip">
+              <div style="font-size:12px; border-bottom:1px solid rgba(255,215,0,0.5); margin-bottom:4px;">捐 感<br/>贈 謝</div>
+              <div style="font-size:13px;" id="prevTypeBadge">禮金 / 物資</div>
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-primary" style="width: 100%;" id="btnSubmit">
+            ➕ 立即登錄並同步至大屏 (Enter)
+          </button>
+        </form>
+      </div>
+
+      <!-- 大屏版面遠端控制與 GAS 設定 -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">⚙️ Google GAS 後台連線 & 大屏設定</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="inputGasUrl">Google Apps Script (GAS) 網頁應用程式網址</label>
+          <input
+            type="url"
+            id="inputGasUrl"
+            class="form-input"
+            style="font-size:13px;"
+            placeholder="https://script.google.com/macros/s/xxxxxx/exec"
+          />
+          <div style="display:flex; gap:8px; margin-top:8px; flex-wrap:wrap;">
+            <button type="button" class="btn btn-secondary" id="btnSaveGas">💾 儲存並連線測試</button>
+            <button type="button" class="btn btn-secondary" id="btnCopyShareUrl" title="複製已綁定此 GAS 網址的大屏網頁連結，傳到任何電腦或手機點開即可直接看最新芳名錄！">🔗 複製大屏專屬分享網址</button>
+            <button type="button" class="btn btn-secondary" id="btnPushLocalToGas" title="將目前畫面上的清單整批覆寫同步至 Google 試算表">☁️ 同步目前清單至試算表</button>
+            <a href="#" target="_blank" class="btn btn-secondary" id="btnOpenSheet" style="display:none; color:#1b5e20; border-color:#a5d6a7; background:#e8f5e9;">📊 開啟雲端試算表</a>
+          </div>
+          <p style="font-size:12px; color:var(--text-muted); margin-top:6px; line-height:1.5;">
+            💡 若在同一台電腦同時開啟「後台」與「大屏」，即使不填 GAS 網址也能<strong>0秒即時連動</strong>；填寫 GAS 網址後，即可跨電腦將資料永久存於 Google 試算表並供 GitHub 前台每 5 秒抓取。
+          </p>
+        </div>
+
+        <hr style="border:none; border-top:1px solid #eee; margin:16px 0;" />
+
+        <div class="form-group" style="margin-bottom:0;">
+          <label class="form-label">🖥️ 遠端控制大屏顯示樣式</label>
+          <div style="display:flex; flex-wrap:wrap; gap:8px;">
+            <button type="button" class="btn btn-secondary" id="btnRemoteVertical">📜 傳統紅紙直書風</button>
+            <button type="button" class="btn btn-secondary" id="btnRemoteHorizontal">🪪 現代喜慶橫卡風</button>
+            <button type="button" class="btn btn-secondary" id="btnRemoteFull">🔍 切換全版/露出底標</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 右欄：目前已登錄芳名錄清單與管理 -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">📋 已登錄捐款芳名錄清單</div>
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+          <button type="button" class="btn btn-secondary" id="btnLoadDemo21" style="font-size:12.5px; padding:6px 12px;">
+            載入照片紅榜 (21筆)
+          </button>
+          <button type="button" class="btn btn-secondary" id="btnLoadDemo94" style="font-size:12.5px; padding:6px 12px;">
+            載入71週年全名單 (94筆)
+          </button>
+          <button type="button" class="btn btn-secondary" id="btnExportCsv" style="font-size:12.5px; padding:6px 12px;">
+            📥 匯出 Excel (CSV)
+          </button>
+          <button type="button" class="btn btn-danger" id="btnClearAll" style="font-size:12.5px; padding:6px 12px;">
+            🗑️ 清空全部 (開始72週年正式登錄)
+          </button>
+        </div>
+      </div>
+
+      <!-- 統計列 -->
+      <div class="stats-bar">
+        <div class="stat-item">
+          <div class="stat-label">總登錄筆數</div>
+          <div class="stat-value" id="statTotalCount">0 筆</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-label">禮金捐款累計</div>
+          <div class="stat-value" id="statTotalCash">NT$ 0</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-label">物資捐贈筆數</div>
+          <div class="stat-value" id="statGoodsCount">0 筆</div>
+        </div>
+      </div>
+
+      <div class="table-toolbar">
+        <input type="search" id="searchInput" class="search-input" placeholder="🔍 搜尋捐款人姓名或捐贈內容..." />
+        <span style="font-size:13px; color:var(--text-muted);" id="lastSyncTimeText">準備就緒</span>
+      </div>
+
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th style="width:56px;">序號</th>
+              <th>捐款人 / 單位芳名</th>
+              <th style="width:76px;">類別</th>
+              <th>大屏紅榜顯示內容</th>
+              <th style="width:140px; text-align:right;">操作</th>
+            </tr>
+          </thead>
+          <tbody id="donorTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script src="shared.js"></script>
+  <script>
+    (function () {
+      const inputDonor = document.getElementById('inputDonor');
+      const inputRaw = document.getElementById('inputRaw');
+      const inputDisplay = document.getElementById('inputDisplay');
+      const editIdInput = document.getElementById('editId');
+      const formTitle = document.getElementById('formTitle');
+      const btnSubmit = document.getElementById('btnSubmit');
+      const btnCancelEdit = document.getElementById('btnCancelEdit');
+      const formAlert = document.getElementById('formAlert');
+
+      const prevDonorText = document.getElementById('prevDonorText');
+      const prevGiftText = document.getElementById('prevGiftText');
+      const prevTypeBadge = document.getElementById('prevTypeBadge');
+
+      const donorTableBody = document.getElementById('donorTableBody');
+      const searchInput = document.getElementById('searchInput');
+      const statTotalCount = document.getElementById('statTotalCount');
+      const statTotalCash = document.getElementById('statTotalCash');
+      const statGoodsCount = document.getElementById('statGoodsCount');
+      const inputGasUrl = document.getElementById('inputGasUrl');
+      const connectionBadge = document.getElementById('connectionBadge');
+      const lastSyncTimeText = document.getElementById('lastSyncTimeText');
+
+      let donations = getLocalDonations();
+      let displayManuallyEdited = false;
+
+      inputGasUrl.value = getGasUrl();
+      updateConnectionBadge();
+
+      function showAlert(msg, type = 'success') {
+        formAlert.textContent = msg;
+        formAlert.className = `status-banner ${type}`;
+        setTimeout(() => {
+          formAlert.className = 'status-banner';
+        }, 4500);
+      }
+
+      function updateConnectionBadge() {
+        const url = getGasUrl();
+        if (url) {
+          connectionBadge.textContent = '☁️ 已連結 Google GAS 雲端試算表（每5秒跨裝置自動同步）';
+        } else {
+          connectionBadge.textContent = '🟢 本機即時連動模式（同電腦大屏 0 秒同步，亦可設定 GAS 雲端）';
+        }
+      }
+
+      // 當輸入金額或物資時，自動轉換為「禮金壹仟元整」等國字大寫
+      function updateLivePreview() {
+        const donorVal = inputDonor.value.trim();
+        const rawVal = inputRaw.value.trim();
+        const type = detectDonationType(rawVal);
+
+        if (!displayManuallyEdited) {
+          inputDisplay.value = formatDonationDisplay(rawVal, type);
+        }
+
+        prevDonorText.textContent = donorVal || '（請輸入捐款人）';
+        prevGiftText.textContent = inputDisplay.value.trim() || '（請輸入金額或物資）';
+        prevTypeBadge.textContent = type === '禮金' ? '💰 禮金' : '🎁 物資';
+      }
+
+      inputDonor.addEventListener('input', updateLivePreview);
+      inputRaw.addEventListener('input', () => {
+        displayManuallyEdited = false;
+        updateLivePreview();
+      });
+      inputDisplay.addEventListener('input', () => {
+        displayManuallyEdited = true;
+        prevGiftText.textContent = inputDisplay.value.trim() || '（請輸入金額或物資）';
+      });
+
+      // 快速職稱前綴按鈕
+      document.querySelectorAll('[data-prefix]').forEach(chip => {
+        chip.addEventListener('click', () => {
+          const prefix = chip.getAttribute('data-prefix');
+          if (!inputDonor.value.startsWith(prefix)) {
+            inputDonor.value = prefix + inputDonor.value;
+          }
+          inputDonor.focus();
+          updateLivePreview();
+        });
+      });
+
+      // 快速金額按鈕
+      document.querySelectorAll('[data-amount]').forEach(chip => {
+        chip.addEventListener('click', () => {
+          inputRaw.value = chip.getAttribute('data-amount');
+          displayManuallyEdited = false;
+          updateLivePreview();
+          inputDisplay.focus();
+        });
+      });
+
+      // 計算統計數字並渲染表格
+      function renderTable() {
+        const keyword = searchInput.value.trim().toLowerCase();
+        let totalCash = 0;
+        let goodsCount = 0;
+
+        donations.forEach(item => {
+          const cleaned = String(item.rawContent || '').replace(/[,，\s$＄元整禮金新台幣NT]/gi, '');
+          if (/^\d+$/.test(cleaned)) {
+            totalCash += parseInt(cleaned, 10);
+          } else {
+            goodsCount++;
+          }
+        });
+
+        statTotalCount.textContent = `${donations.length} 筆`;
+        statTotalCash.textContent = `NT$ ${totalCash.toLocaleString('zh-TW')}`;
+        statGoodsCount.textContent = `${goodsCount} 筆`;
+
+        const filtered = donations.map((item, idx) => ({ ...item, order: idx + 1 })).filter(item => {
+          if (!keyword) return true;
+          return (
+            String(item.donor || '').toLowerCase().includes(keyword) ||
+            String(item.displayContent || '').toLowerCase().includes(keyword) ||
+            String(item.rawContent || '').toLowerCase().includes(keyword)
+          );
+        });
+
+        // 最新登錄的排在表格最上方方便核對
+        const reversed = [...filtered].reverse();
+
+        if (reversed.length === 0) {
+          donorTableBody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:28px; color:#888;">目前沒有符合的捐款芳名錄資料</td></tr>`;
+          return;
+        }
+
+        donorTableBody.innerHTML = reversed.map(item => {
+          const isCash = item.type === '禮金' || /^\d+$/.test(String(item.rawContent || '').replace(/[,，\s]/g, ''));
+          return `
+            <tr>
+              <td style="font-weight:700; color:#777;">#${item.order}</td>
+              <td style="font-weight:900; font-size:15.5px; color:#221111;">${escapeHtml(item.donor)}</td>
+              <td>
+                <span class="badge ${isCash ? 'badge-cash' : 'badge-goods'}">
+                  ${isCash ? '禮金' : '物資'}
+                </span>
+              </td>
+              <td style="font-weight:700; color:#b71c1c;">${escapeHtml(item.displayContent || item.rawContent)}</td>
+              <td style="text-align:right; white-space:nowrap;">
+                <button type="button" class="btn btn-secondary" style="padding:4px 9px; font-size:12px;" onclick="window.editDonation('${escapeHtml(item.id)}')">✏️ 修改</button>
+                <button type="button" class="btn btn-danger" style="padding:4px 9px; font-size:12px;" onclick="window.deleteDonation('${escapeHtml(item.id)}')">🗑️ 刪除</button>
+              </td>
+            </tr>
+          `;
+        }).join('');
+      }
+
+      function escapeHtml(str) {
+        return String(str || '')
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#39;');
+      }
+
+      // 表單送出（新增或修改）
+      document.getElementById('donationForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const donor = inputDonor.value.trim();
+        const rawContent = inputRaw.value.trim();
+        const type = detectDonationType(rawContent);
+        const displayContent = inputDisplay.value.trim() || formatDonationDisplay(rawContent, type);
+        const editingId = editIdInput.value.trim();
+
+        if (!donor || !rawContent) return;
+
+        if (editingId) {
+          // 修改模式
+          const idx = donations.findIndex(d => String(d.id) === editingId);
+          if (idx !== -1) {
+            donations[idx] = {
+              ...donations[idx],
+              donor,
+              type,
+              rawContent,
+              displayContent
+            };
+          }
+          saveLocalDonations(donations);
+          renderTable();
+          resetForm();
+          showAlert(`✅ 已更新「${donor}」的芳名錄資料！`);
+
+          // 若有設定 GAS，背景同步至雲端
+          await syncActionToGas({ action: 'update', id: editingId, donor, type, rawContent, displayContent });
+        } else {
+          // 新增模式
+          const newId = 'tp72_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5);
+          const newItem = {
+            id: newId,
+            donor,
+            type,
+            rawContent,
+            displayContent,
+            updatedAt: new Date().toISOString()
+          };
+          donations.push(newItem);
+          saveLocalDonations(donations);
+          renderTable();
+          resetForm();
+          showAlert(`🎉 已成功登錄「${donor} — ${displayContent}」！大屏已同步更新。`);
+
+          await syncActionToGas({ action: 'add', ...newItem });
+        }
+      });
+
+      function resetForm() {
+        editIdInput.value = '';
+        inputDonor.value = '';
+        inputRaw.value = '';
+        inputDisplay.value = '';
+        displayManuallyEdited = false;
+        formTitle.textContent = '✍️ 新增捐款 / 捐贈物資';
+        btnSubmit.textContent = '➕ 立即登錄並同步至大屏 (Enter)';
+        btnCancelEdit.style.display = 'none';
+        updateLivePreview();
+        inputDonor.focus();
+      }
+
+      btnCancelEdit.addEventListener('click', resetForm);
+
+      // 全域編輯與刪除函式
+      window.editDonation = function (id) {
+        const item = donations.find(d => String(d.id) === String(id));
+        if (!item) return;
+        editIdInput.value = item.id;
+        inputDonor.value = item.donor;
+        inputRaw.value = item.rawContent;
+        inputDisplay.value = item.displayContent || formatDonationDisplay(item.rawContent, item.type);
+        displayManuallyEdited = true;
+        formTitle.textContent = `✏️ 修改芳名錄：${item.donor}`;
+        btnSubmit.textContent = '💾 儲存修改並更新大屏';
+        btnCancelEdit.style.display = 'inline-flex';
+        updateLivePreview();
+        inputDonor.focus();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      };
+
+      window.deleteDonation = async function (id) {
+        const item = donations.find(d => String(d.id) === String(id));
+        if (!item) return;
+        if (!confirm(`確定要刪除「${item.donor}（${item.displayContent}）」嗎？`)) return;
+
+        donations = donations.filter(d => String(d.id) !== String(id));
+        saveLocalDonations(donations);
+        renderTable();
+        showAlert(`🗑️ 已刪除「${item.donor}」`);
+        await syncActionToGas({ action: 'delete', id });
+      };
+
+      // 與 GAS 後台通訊（使用 text/plain 避免 CORS preflight 阻擋）
+      async function syncActionToGas(payload) {
+        const gasUrl = getGasUrl();
+        if (!gasUrl) return;
+        try {
+          lastSyncTimeText.textContent = '☁️ 正在同步至 Google 試算表...';
+          const res = await fetch(gasUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            body: JSON.stringify(payload)
+          });
+          const data = await res.json();
+          if (data && data.status === 'ok') {
+            if (data.spreadsheetUrl) {
+              const btnSheet = document.getElementById('btnOpenSheet');
+              btnSheet.href = data.spreadsheetUrl;
+              btnSheet.style.display = 'inline-flex';
+            }
+            if (Array.isArray(data.items)) {
+              donations = data.items;
+              saveLocalDonations(donations);
+              renderTable();
+              lastSyncTimeText.textContent = `☁️ 雲端已同步 (${new Date().toLocaleTimeString('zh-TW', { hour12: false })})`;
+            }
+          }
+        } catch (err) {
+          lastSyncTimeText.textContent = '⚠️ 雲端同步失敗，已保留於本機快取';
+        }
+      }
+
+      // 儲存 GAS URL 並測試讀取
+      document.getElementById('btnSaveGas').addEventListener('click', async () => {
+        const url = inputGasUrl.value.trim();
+        setGasUrl(url);
+        updateConnectionBadge();
+        if (!url) {
+          showAlert('已切換為本機即時連動模式');
+          return;
+        }
+        try {
+          showAlert('⏳ 正在連線測試 Google 試算表後台...');
+          const sep = url.includes('?') ? '&' : '?';
+          const res = await fetch(`${url}${sep}action=list&refresh=1&_t=${Date.now()}`);
+          const data = await res.json();
+          if (data && data.status === 'ok') {
+            if (data.spreadsheetUrl) {
+              const btnSheet = document.getElementById('btnOpenSheet');
+              btnSheet.href = data.spreadsheetUrl;
+              btnSheet.style.display = 'inline-flex';
+            }
+            if (Array.isArray(data.items) && data.items.length > 0) {
+              donations = data.items;
+              saveLocalDonations(donations);
+              renderTable();
+            }
+            showAlert(`✅ GAS 雲端連線成功！目前雲端共有 ${data.items ? data.items.length : 0} 筆資料。`);
+          } else {
+            showAlert(`⚠️ GAS 回傳異常：${data.message || '未知錯誤'}`, 'error');
+          }
+        } catch (err) {
+          showAlert('❌ 無法連線至 GAS 網址，請確認部署權限已設為「所有人 (Anyone)」', 'error');
+        }
+      });
+
+      // 複製已包含 GAS 參數的大屏專屬網址，方便在任何電腦或手機直接點擊查閱
+      document.getElementById('btnCopyShareUrl').addEventListener('click', () => {
+        const url = inputGasUrl.value.trim() || getGasUrl();
+        if (!url) {
+          showAlert('請先在上方輸入框貼上 Google Apps Script (GAS) 網址！', 'error');
+          return;
+        }
+        setGasUrl(url);
+        const baseUrl = window.location.href.split('?')[0].replace(/admin\.html$/i, 'index.html');
+        const shareUrl = `${baseUrl}?gas=${encodeURIComponent(url)}`;
+        navigator.clipboard.writeText(shareUrl).then(() => {
+          showAlert('🔗 已複製「大屏專屬分享網址」！傳到任何電腦或手機點開即可自動連線查閱。');
+        }).catch(() => {
+          prompt('請複製以下大屏專屬網址：', shareUrl);
+        });
+      });
+
+      // 將本機清單整批上傳至 GAS
+      document.getElementById('btnPushLocalToGas').addEventListener('click', async () => {
+        const url = getGasUrl();
+        if (!url) {
+          showAlert('請先填寫並儲存 Google Apps Script 網址', 'error');
+          return;
+        }
+        if (!confirm(`確定要將目前畫面上的 ${donations.length} 筆資料同步覆寫至 Google 試算表嗎？`)) return;
+        await syncActionToGas({ action: 'replaceAll', items: donations });
+        showAlert('✅ 雲端試算表同步完成！');
+      });
+
+      // 遠端切換大屏樣式
+      document.getElementById('btnRemoteVertical').addEventListener('click', () => {
+        saveDisplaySettings({ cardStyle: 'vertical-red' });
+        showAlert('🖥️ 已將大屏切換為「傳統紅紙直書風」');
+      });
+
+      document.getElementById('btnRemoteHorizontal').addEventListener('click', () => {
+        saveDisplaySettings({ cardStyle: 'horizontal-card' });
+        showAlert('🖥️ 已將大屏切換為「現代喜慶橫卡風」');
+      });
+
+      document.getElementById('btnRemoteFull').addEventListener('click', () => {
+        const cur = getDisplaySettings();
+        const next = cur.headerMode === 'full' ? 'compact' : 'full';
+        saveDisplaySettings({ headerMode: next });
+        showAlert(`🖥️ 已切換大屏版面模式為：${next === 'full' ? '全螢幕最大化' : '露出底部邀請卡標語'}`);
+      });
+
+      // 載入測試資料與清空按鈕
+      document.getElementById('btnLoadDemo21').addEventListener('click', () => {
+        if (!confirm('要載入照片中的 21 筆手寫紅榜資料作為預覽嗎？')) return;
+        donations = DEMO_71_DONATIONS.slice(0, 21);
+        saveLocalDonations(donations);
+        renderTable();
+        showAlert('✅ 已載入照片紅榜 21 筆資料！可切至大屏查看效果。');
+      });
+
+      document.getElementById('btnLoadDemo94').addEventListener('click', () => {
+        if (!confirm('要載入 71 週年完整 94 筆捐款資料，測試大屏「全部呈現在同一頁」的自動縮放效果嗎？')) return;
+        donations = [...DEMO_71_DONATIONS];
+        saveLocalDonations(donations);
+        renderTable();
+        showAlert('✅ 已載入 71 週年完整 94 筆資料！');
+      });
+
+      document.getElementById('btnClearAll').addEventListener('click', async () => {
+        if (!confirm('確定要清空目前所有預覽資料，開始 72 週年校慶正式登錄嗎？')) return;
+        donations = [];
+        saveLocalDonations(donations);
+        renderTable();
+        showAlert('✨ 已清空資料，可以開始輸入 72 週年第一筆捐款芳名錄！');
+        await syncActionToGas({ action: 'replaceAll', items: [] });
+      });
+
+      // 匯出 CSV (含 UTF-8 BOM 讓 Excel 直接開啟不亂碼)
+      document.getElementById('btnExportCsv').addEventListener('click', () => {
+        const headers = ['序號', '捐款人或單位', '類別', '原始輸入(金額或物資)', '大屏紅榜顯示文字'];
+        const rows = donations.map((d, i) => [
+          i + 1,
+          `"${String(d.donor || '').replace(/"/g, '""')}"`,
+          `"${String(d.type || '')}"`,
+          `"${String(d.rawContent || '').replace(/"/g, '""')}"`,
+          `"${String(d.displayContent || '').replace(/"/g, '""')}"`
+        ]);
+        const csvContent = '\uFEFF' + [headers.join(','), ...rows.map(r => r.join(','))].join('\r\n');
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = `太平國小72週年校慶捐款芳名錄_${new Date().toISOString().slice(0, 10)}.csv`;
+        link.click();
+      });
+
+      searchInput.addEventListener('input', renderTable);
+
+      // 初始渲染
+      renderTable();
+      updateLivePreview();
+    })();
+  </script>
+</body>
+</html>
