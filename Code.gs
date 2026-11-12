@@ -12,6 +12,7 @@
 const SPREADSHEET_ID = ''; // 選填：留空即可自動偵測或自動建立試算表！
 const SHEET_NAME = '捐款芳名錄';
 const CACHE_KEY = 'DONATIONS_JSON_CACHE_V1';
+const SETTINGS_PROP_KEY = 'DISPLAY_SETTINGS_JSON'; // 後台送來的大屏顯示設定（樣式、字色、版面、字級）
 
 /**
  * 首次測試與授權專用函式（在 GAS 編輯器上方選取 setup 並按「執行」即可完成授權與初始化）
@@ -119,8 +120,16 @@ function getDonationsData(forceRefresh) {
     }
   }
 
+  // 後台設定的大屏顯示樣式，跟名單一起回傳，讓任何裝置上的大屏都能跟著切換
+  let settings = null;
+  try {
+    const savedSettings = PropertiesService.getScriptProperties().getProperty(SETTINGS_PROP_KEY);
+    if (savedSettings) settings = JSON.parse(savedSettings);
+  } catch (e) {}
+
   const payload = {
     status: 'ok',
+    settings: settings,
     spreadsheetUrl: ss.getUrl(),
     updatedAt: new Date().toISOString(),
     count: items.length,
@@ -236,6 +245,42 @@ function doPost(e) {
         }
       }
       return jsonResponse({ status: 'error', message: '找不到要刪除的資料列' });
+    }
+
+    // 後台切換大屏樣式 / 字色 / 版面 / 字級
+    if (action === 'setSettings') {
+      const incoming = (body.settings && typeof body.settings === 'object') ? body.settings : {};
+      PropertiesService.getScriptProperties().setProperty(SETTINGS_PROP_KEY, JSON.stringify(incoming));
+      clearDonationsCache();
+      return jsonResponse(getDonationsData(true));
+    }
+
+    // 後台手動調整順序：依傳入的 ID 順序重排資料列（保留每一列原本的登錄時間與備註）
+    if (action === 'reorder') {
+      const ids = Array.isArray(body.ids) ? body.ids.map(String) : [];
+      const lastRow = sheet.getLastRow();
+      if (lastRow >= 2 && ids.length > 0) {
+        const range = sheet.getRange(2, 1, lastRow - 1, 7);
+        const values = range.getValues();
+        const used = {};
+        const ordered = [];
+        ids.forEach(function (id) {
+          for (let i = 0; i < values.length; i++) {
+            if (!used[i] && String(values[i][0]) === id) {
+              used[i] = true;
+              ordered.push(values[i]);
+              break;
+            }
+          }
+        });
+        // 沒出現在清單裡的列（例如另一台電腦剛新增的）接在最後，不會遺失
+        for (let i = 0; i < values.length; i++) {
+          if (!used[i]) ordered.push(values[i]);
+        }
+        range.setValues(ordered);
+      }
+      clearDonationsCache();
+      return jsonResponse(getDonationsData(true));
     }
 
     if (action === 'replaceAll' || action === 'batchAdd') {

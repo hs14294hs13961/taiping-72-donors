@@ -87,6 +87,22 @@ function numberToTraditionalChinese(num) {
 }
 
 /**
+ * 直書用標點：把括號、引號、破折號換成直式字形（︵︶﹁﹂︱…），
+ * 讓「關西鎮公所(感謝…)」在紅條上由上而下正確排列。只影響顯示，不改動儲存的資料，字數也不變。
+ */
+const TP72_VERTICAL_PUNCT = {
+  '(': '︵', '（': '︵', ')': '︶', '）': '︶',
+  '「': '﹁', '」': '﹂', '『': '﹃', '』': '﹄',
+  '《': '︽', '》': '︾', '〈': '︿', '〉': '﹀',
+  '【': '︻', '】': '︼', '〔': '︹', '〕': '︺',
+  '—': '︱', '－': '︱', '-': '︱', '–': '︱'
+};
+
+function toVerticalPunctuation(text) {
+  return Array.from(String(text || '')).map((ch) => TP72_VERTICAL_PUNCT[ch] || ch).join('');
+}
+
+/**
  * 判斷輸入內容是「禮金」還是「物資」
  */
 function detectDonationType(rawInput) {

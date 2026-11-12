@@ -6,493 +6,590 @@
   <title>太平國小 72週年校慶 - 捐款芳名錄後台管理系統</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Noto+Serif+TC:wght@700;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+TC:wght@700&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
   <style>
+    /* ==========================================================
+       後台是禮金桌的工作畫面：底色安靜、平塗、無漸層陰影。
+       校慶紅只用在小地方（主要按鈕、數字、紅條預覽），大面積用它的淡色。
+       字體：黑體一套；楷體只出現在「紅條預覽」，與大屏一致。
+       ========================================================== */
     :root {
-      --red-main: #c62020;
-      --red-dark: #8e1111;
-      --gold: #ffd54f;
-      --bg-page: #f7f4f4;
-      --card-bg: #ffffff;
-      --border: #e2d9d9;
-      --text-main: #221818;
-      --text-muted: #6e5d5d;
+      --red: #c8161d;
+      --red-deep: #a80f17;
+      --paper-red: #dc2f2b;
+      --gold: #f7c53c;
+      --ink: #1c0a0a;
+      --ground: #fbf7f6;
+      --surface: #ffffff;
+      --tint: #fdeeee;          /* 校慶紅的淡色：快速鍵、禮金標記 */
+      --tint-ink: #8a1118;
+      --border: #ece3e1;
+      --rule: #f4eeec;
+      --control: #d9cdca;
+      --text: #1f1413;
+      --muted: #655855;
+      --neutral: #f1edec;
+      --kai: 'LXGW WenKai TC', 'DFKai-SB', '標楷體', serif;
+      --sans: 'Noto Sans TC', 'Microsoft JhengHei', '微軟正黑體', sans-serif;
+      --radius: 8px;
+      --radius-control: 6px;
     }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-      font-family: 'Noto Sans TC', sans-serif;
-      background: var(--bg-page);
-      color: var(--text-main);
+      font-family: var(--sans);
+      font-size: 15px;
+      line-height: 1.5;
+      background: var(--ground);
+      color: var(--text);
       min-height: 100vh;
       padding-bottom: 48px;
     }
 
-    /* 頂部導覽列 */
-    .navbar {
-      background: linear-gradient(90deg, #8e1111 0%, #c62020 50%, #8e1111 100%);
-      color: #fff;
-      padding: 14px 24px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border-bottom: 3px solid var(--gold);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    .num { font-variant-numeric: tabular-nums; }
+
+    /* 頂部列：校徽、畫面名稱、連線狀態、開啟大屏 */
+    .topbar {
+      background: var(--surface);
+      border-top: 6px solid var(--red);
+      border-bottom: 1px solid var(--border);
       position: sticky;
       top: 0;
       z-index: 40;
     }
 
-    .nav-left {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-    }
-
-    .nav-logo {
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      background: #fff;
-      padding: 3px;
-      object-fit: contain;
-    }
-
-    .nav-title h1 {
-      font-size: 20px;
-      font-weight: 900;
-      letter-spacing: 0.04em;
-    }
-
-    .nav-title p {
-      font-size: 13px;
-      color: #ffe082;
-    }
-
-    .nav-actions {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      padding: 9px 16px;
-      border-radius: 8px;
-      font-size: 14px;
-      font-weight: 700;
-      cursor: pointer;
-      border: 1px solid transparent;
-      transition: all 0.15s ease;
-      text-decoration: none;
-    }
-
-    .btn-gold {
-      background: var(--gold);
-      color: #3e1010;
-      border-color: #ffca28;
-    }
-    .btn-gold:hover {
-      background: #ffca28;
-      transform: translateY(-1px);
-    }
-
-    .btn-outline-light {
-      background: rgba(255, 255, 255, 0.12);
-      color: #fff;
-      border-color: rgba(255, 255, 255, 0.4);
-    }
-    .btn-outline-light:hover {
-      background: rgba(255, 255, 255, 0.25);
-    }
-
-    .btn-primary {
-      background: var(--red-main);
-      color: #fff;
-      font-size: 16px;
-      padding: 12px 24px;
-      box-shadow: 0 4px 12px rgba(198, 32, 32, 0.3);
-    }
-    .btn-primary:hover {
-      background: #a81616;
-    }
-
-    .btn-secondary {
-      background: #f0eaea;
-      color: #3d2c2c;
-      border-color: #d5c7c7;
-    }
-    .btn-secondary:hover {
-      background: #e3d8d8;
-    }
-
-    .btn-danger {
-      background: #fff0f0;
-      color: #c62828;
-      border-color: #ffcdd2;
-    }
-    .btn-danger:hover {
-      background: #ffcdd2;
-    }
-
-    /* 主內容雙欄佈局 */
-    .container {
+    .topbar-inner {
       max-width: 1360px;
-      margin: 24px auto;
-      padding: 0 20px;
-      display: grid;
-      grid-template-columns: 440px 1fr;
-      gap: 24px;
-      align-items: start;
-    }
-
-    @media (max-width: 1024px) {
-      .container {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    .card {
-      background: var(--card-bg);
-      border-radius: 14px;
-      border: 1px solid var(--border);
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
-      padding: 22px;
-      margin-bottom: 20px;
-    }
-
-    .card-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border-bottom: 2px solid #f2ebeb;
-      padding-bottom: 12px;
-      margin-bottom: 18px;
-    }
-
-    .card-title {
-      font-size: 18px;
-      font-weight: 900;
-      color: var(--red-dark);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .form-group {
-      margin-bottom: 16px;
-    }
-
-    .form-label {
-      display: block;
-      font-size: 14px;
-      font-weight: 700;
-      margin-bottom: 6px;
-      color: #3d2929;
-    }
-
-    .form-input {
-      width: 100%;
-      padding: 11px 14px;
-      font-size: 16px;
-      border: 2px solid #d8caca;
-      border-radius: 8px;
-      font-family: inherit;
-      transition: border-color 0.15s;
-    }
-
-    .form-input:focus {
-      outline: none;
-      border-color: var(--red-main);
-      box-shadow: 0 0 0 3px rgba(198, 32, 32, 0.12);
-    }
-
-    /* 快速標籤按鈕群 */
-    .quick-tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      margin-top: 8px;
-    }
-
-    .chip {
-      background: #fdf6f6;
-      border: 1px solid #e6cccc;
-      color: #6e2c2c;
-      padding: 4px 10px;
-      border-radius: 999px;
-      font-size: 12.5px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: all 0.12s;
-    }
-
-    .chip:hover {
-      background: var(--red-main);
-      color: #fff;
-      border-color: var(--red-main);
-    }
-
-    /* 即時紅紙預覽盒 */
-    .live-preview-box {
-      background: #fff8f8;
-      border: 1.5px dashed #d32f2f;
-      border-radius: 10px;
-      padding: 14px;
-      margin-bottom: 18px;
+      margin: 0 auto;
+      padding: 10px 24px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 16px;
     }
 
-    .preview-strip {
-      background: linear-gradient(180deg, #d62424 0%, #b71717 100%);
-      border: 2px solid #ffd54f;
-      border-radius: 6px;
-      padding: 10px 16px;
-      color: #140303;
-      font-family: 'Noto Serif TC', 'DFKai-SB', '標楷體', serif;
-      font-weight: 900;
-      min-width: 110px;
-      text-align: center;
-      box-shadow: 0 4px 10px rgba(183, 23, 23, 0.25);
-    }
+    .nav-left { display: flex; align-items: center; gap: 12px; min-width: 0; }
 
-    /* 統計資訊卡 */
-    .stats-bar {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
-      margin-bottom: 18px;
-    }
+    .nav-logo { width: 44px; height: 44px; object-fit: contain; flex-shrink: 0; }
 
-    .stat-item {
-      background: #fdf8f8;
-      border: 1px solid #eddada;
-      border-radius: 10px;
-      padding: 12px 14px;
-      text-align: center;
-    }
+    .nav-title { min-width: 0; }
 
-    .stat-label {
-      font-size: 12px;
-      color: var(--text-muted);
+    .nav-title h1 {
+      font-size: 20px;
       font-weight: 700;
+      line-height: 1.3;
+      letter-spacing: 0.02em;
     }
 
-    .stat-value {
-      font-size: 22px;
-      font-weight: 900;
-      color: var(--red-main);
-      margin-top: 2px;
-    }
-
-    /* 表格樣式 */
-    .table-toolbar {
+    .nav-title p {
+      font-size: 13px;
+      color: var(--muted);
       display: flex;
-      flex-wrap: wrap;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .nav-title p::before {
+      content: '';
+      width: 8px;
+      height: 8px;
+      flex-shrink: 0;
+      border-radius: 50%;
+      background: #2f9e55;
+    }
+
+    /* 按鈕 */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 36px;
+      padding: 6px 14px;
+      border-radius: var(--radius-control);
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 1.3;
+      cursor: pointer;
+      border: 1px solid var(--control);
+      background: var(--surface);
+      color: var(--text);
+      text-decoration: none;
+      white-space: nowrap;
+      transition: background-color 0.15s, border-color 0.15s, color 0.15s;
+    }
+
+    .btn:hover { background: var(--neutral); border-color: #c5b7b3; }
+    .btn:active { transform: translateY(1px); }
+    .btn:focus-visible,
+    .chip:focus-visible,
+    .btn-text:focus-visible {
+      outline: 2px solid var(--red);
+      outline-offset: 2px;
+    }
+
+    .btn-primary {
+      width: 100%;
+      min-height: 48px;
+      background: var(--red);
+      border-color: var(--red);
+      color: #ffffff;
+      font-size: 16px;
+    }
+    .btn-primary:hover { background: var(--red-deep); border-color: var(--red-deep); }
+
+    .btn-danger { color: var(--red-deep); border-color: #e9c3c3; }
+    .btn-danger:hover { background: var(--tint); border-color: #dba5a5; }
+
+    .btn-small { min-height: 32px; padding: 4px 12px; font-size: 13px; }
+
+    .btn-text {
+      background: none;
+      border: 0;
+      padding: 6px 8px;
+      border-radius: 4px;
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text);
+      cursor: pointer;
+    }
+    .btn-text:hover { background: var(--neutral); }
+    .btn-text.danger { color: var(--red-deep); }
+    .btn-text.danger:hover { background: var(--tint); }
+
+    /* 主內容雙欄：440 + 24 + 1fr */
+    .container {
+      max-width: 1360px;
+      margin: 24px auto 0;
+      padding: 0 24px;
+      display: grid;
+      grid-template-columns: 440px minmax(0, 1fr);
+      gap: 24px;
+      align-items: start;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      margin-bottom: 24px;
+    }
+
+    .card-header {
+      display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 12px;
-      margin-bottom: 14px;
+      margin-bottom: 16px;
     }
 
-    .search-input {
-      padding: 8px 14px;
-      border: 1.5px solid #d8caca;
-      border-radius: 8px;
-      font-size: 14px;
-      width: 260px;
-    }
-
-    .table-wrapper {
-      max-height: 620px;
-      overflow-y: auto;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 14.5px;
-    }
-
-    thead {
-      background: #f5ecec;
-      position: sticky;
-      top: 0;
-      z-index: 5;
-    }
-
-    th, td {
-      padding: 11px 12px;
-      text-align: left;
-      border-bottom: 1px solid #eee4e4;
-    }
-
-    th {
-      font-weight: 900;
-      color: #4a2c2c;
-      font-size: 13px;
-    }
-
-    tbody tr:hover {
-      background: #fff9f9;
-    }
-
-    .badge {
-      display: inline-block;
-      padding: 2px 8px;
-      border-radius: 999px;
-      font-size: 12px;
+    .card-title {
+      font-size: 17px;
       font-weight: 700;
     }
 
-    .badge-cash {
-      background: #ffebee;
-      color: #c62828;
-      border: 1px solid #ffcdd2;
+    /* 表單 */
+    .form-with-preview {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 96px;
+      gap: 16px;
+      margin-bottom: 16px;
     }
 
-    .badge-goods {
-      background: #e8f5e9;
-      color: #2e7d32;
-      border: 1px solid #c8e6c9;
+    .form-group { margin-bottom: 16px; }
+    .form-group:last-child { margin-bottom: 0; }
+
+    .form-label {
+      display: block;
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .form-hint {
+      display: block;
+      font-size: 13px;
+      font-weight: 400;
+      color: var(--muted);
+    }
+
+    .form-input,
+    .search-input {
+      width: 100%;
+      min-height: 44px;
+      padding: 8px 12px;
+      font-family: inherit;
+      font-size: 16px;
+      color: var(--text);
+      background: var(--surface);
+      border: 1px solid var(--control);
+      border-radius: var(--radius-control);
+      transition: border-color 0.15s;
+    }
+
+    .form-input::placeholder,
+    .search-input::placeholder { color: #6f625f; }
+
+    .form-input:focus,
+    .search-input:focus {
+      outline: 2px solid var(--red);
+      outline-offset: -1px;
+      border-color: var(--red);
+    }
+
+    /* 快速鍵 */
+    .quick-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+
+    .chip {
+      background: var(--tint);
+      border: 0;
+      color: var(--tint-ink);
+      min-height: 28px;
+      padding: 3px 10px;
+      border-radius: 4px;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background-color 0.12s, color 0.12s;
+    }
+    .chip:hover { background: var(--red); color: #ffffff; }
+    .chip:active { transform: translateY(1px); }
+
+    /* 紅條即時預覽：與大屏上的紅條同一個樣子 */
+    .preview-col { display: flex; flex-direction: column; gap: 6px; }
+
+    .preview-strip {
+      flex: 1;
+      min-height: 260px;
+      background: var(--paper-red);
+      border-radius: 3px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      color: var(--ink);
+    }
+
+    .ps-labels {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      background: var(--gold);
+      padding: 6px 3px 5px;
+      text-align: center;
+      font-family: var(--kai);
+      font-weight: 700;
+      font-size: 17px;
+      line-height: 1.1;
+    }
+
+    .ps-labels div { display: flex; flex-direction: column; align-items: center; }
+
+    .ps-body {
+      flex: 1;
+      min-height: 0;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2px;
+      padding: 6px 4px 8px;
+    }
+
+    .ps-col {
+      writing-mode: vertical-rl;
+      text-orientation: upright;
+      display: flex;
+      align-items: center;
+      font-size: 20px;
+      font-weight: 900;
+      line-height: 1.05;
+      overflow: hidden;
+      word-break: break-all;
+    }
+
+    .ps-col.is-placeholder { font-weight: 500; }
+
+    .preview-caption {
+      font-size: 13px;
+      color: var(--muted);
+      text-align: center;
+      line-height: 1.35;
     }
 
     /* 狀態通知列 */
     .status-banner {
-      padding: 10px 14px;
-      border-radius: 8px;
-      font-size: 13.5px;
+      padding: 10px 12px;
+      border-radius: var(--radius-control);
+      font-size: 14px;
       font-weight: 700;
-      margin-bottom: 14px;
+      margin-bottom: 16px;
       display: none;
     }
-    .status-banner.success {
-      display: block;
-      background: #e8f5e9;
-      color: #1b5e20;
-      border: 1px solid #a5d6a7;
+    .status-banner.success { display: block; background: #dcfae5; color: #04250e; }
+    .status-banner.error { display: block; background: #ffedea; color: #831c1e; }
+
+    .button-row { display: flex; flex-wrap: wrap; gap: 8px; }
+
+    .note {
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 10px;
+      line-height: 1.6;
     }
-    .status-banner.error {
-      display: block;
-      background: #ffebee;
-      color: #b71c1c;
-      border: 1px solid #ef9a9a;
+
+    .section-gap { margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--rule); }
+
+    /* 統計：一個容器分三欄 */
+    .stats-bar {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      margin-bottom: 20px;
+    }
+
+    .stat-item { padding: 12px 16px; }
+    .stat-item + .stat-item { border-left: 1px solid var(--border); }
+
+    .stat-label { font-size: 13px; color: var(--muted); }
+
+    .stat-value {
+      font-size: 26px;
+      font-weight: 700;
+      line-height: 1.25;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .stat-item:first-child .stat-value { color: var(--red); font-size: 30px; }
+
+    /* 清單工具列與表格 */
+    .table-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+
+    .search-input { width: 300px; min-height: 36px; font-size: 14px; }
+
+    .sync-note { font-size: 13px; color: var(--muted); margin-left: auto; }
+
+    .table-wrapper { max-height: 600px; overflow-y: auto; }
+
+    table { width: 100%; border-collapse: collapse; font-size: 15px; }
+
+    thead th {
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      background: var(--surface);
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--muted);
+    }
+
+    th, td { padding: 11px 10px; text-align: left; border-bottom: 1px solid var(--rule); }
+    th:first-child, td:first-child { padding-left: 2px; }
+    th:last-child, td:last-child { padding-right: 0; text-align: right; white-space: nowrap; }
+
+    td.order, th.order { width: 68px; text-align: left; }
+
+    .order-input {
+      width: 58px;
+      min-height: 34px;
+      padding: 4px 6px;
+      font-family: inherit;
+      font-size: 15px;
+      font-variant-numeric: tabular-nums;
+      text-align: right;
+      color: var(--text);
+      background: var(--surface);
+      border: 1px solid var(--control);
+      border-radius: var(--radius-control);
+    }
+    .order-input:focus { outline: 2px solid var(--red); outline-offset: -1px; border-color: var(--red); }
+
+    .order-hint { margin: 0 0 8px; }
+    td.donor { font-weight: 700; font-size: 16px; }
+    td.gift { color: var(--tint-ink); font-weight: 500; }
+    td.empty { text-align: center; padding: 32px 10px; color: var(--muted); }
+
+    tbody tr:hover { background: #fdfaf9; }
+
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 13px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    .badge-cash { background: var(--tint); color: var(--tint-ink); }
+    .badge-goods { background: var(--neutral); color: #3f3432; }
+
+    .list-footer {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+      margin-top: 16px;
+    }
+    .list-footer .label { font-size: 13px; color: var(--muted); margin-right: 4px; }
+    .list-footer .btn-danger { margin-left: auto; }
+
+    /* 平板與手機 */
+    @media (max-width: 1100px) {
+      .container { grid-template-columns: minmax(0, 1fr); }
+    }
+
+    @media (max-width: 640px) {
+      .topbar-inner { padding: 8px 16px; }
+      .nav-title h1 { font-size: 17px; }
+      .nav-title p { display: none; }
+      .nav-logo { width: 36px; height: 36px; }
+      .container { padding: 0 16px; margin-top: 16px; gap: 16px; }
+      .card { padding: 16px; margin-bottom: 16px; }
+      .form-with-preview { grid-template-columns: minmax(0, 1fr) 84px; gap: 12px; }
+      .stat-item { padding: 10px 10px; }
+      .stat-value { font-size: 19px; }
+      .stat-item:first-child .stat-value { font-size: 22px; }
+      .search-input { width: 100%; min-height: 44px; font-size: 16px; }
+      .sync-note { margin-left: 0; }
+      .btn { min-height: 44px; }
+      .btn-text { min-height: 44px; padding: 6px 10px; }
+      .chip { min-height: 36px; }
+      .list-footer .btn-danger { margin-left: 0; }
+
+      /* 表格改為兩行式清單：第一行芳名、第二行顯示內容，右側為操作 */
+      thead { display: none; }
+      tbody tr {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto auto;
+        column-gap: 8px;
+        padding: 8px 0;
+        border-bottom: 1px solid var(--rule);
+      }
+      tbody td { border: 0; padding: 0; }
+      td.type { display: none; }
+      td.order { grid-column: 2; grid-row: 1 / span 2; align-self: center; width: auto; }
+      .order-input { min-height: 44px; width: 52px; }
+      td.donor { grid-column: 1; grid-row: 1; }
+      td.gift { grid-column: 1; grid-row: 2; font-size: 14px; }
+      td.actions { grid-column: 3; grid-row: 1 / span 2; align-self: center; }
+      td.empty { grid-column: 1 / -1; }
     }
   </style>
 </head>
 <body>
-  <nav class="navbar">
-    <div class="nav-left">
-      <img src="太平國小_校徽.png" alt="太平國小校徽" class="nav-logo" />
-      <div class="nav-title">
-        <h1>太平國小 72週年校慶 — 捐款芳名錄輸入後台</h1>
-        <p id="connectionBadge">🟢 本機即時連動中（輸入後大屏 5 秒內自動更新）</p>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="nav-left">
+        <img src="太平國小_校徽.png" alt="太平國小校徽" class="nav-logo" />
+        <div class="nav-title">
+          <h1>72週年校慶 捐款芳名錄登錄</h1>
+          <p id="connectionBadge">本機即時連動中（輸入後大屏 5 秒內自動更新）</p>
+        </div>
       </div>
+      <a href="index.html" target="_blank" class="btn">開啟大屏展示畫面</a>
     </div>
-    <div class="nav-actions">
-      <a href="index.html" target="_blank" class="btn btn-gold">
-        🖥️ 開啟大屏展示畫面 (投影用)
-      </a>
-    </div>
-  </nav>
+  </header>
 
   <div class="container">
     <!-- 左欄：快速輸入表單 & 雲端 GAS 設定 -->
     <div>
       <div class="card">
         <div class="card-header">
-          <div class="card-title" id="formTitle">✍️ 新增捐款 / 捐贈物資</div>
-          <button class="btn btn-secondary" id="btnCancelEdit" style="display:none; padding:4px 10px; font-size:12px;">取消修改</button>
+          <h2 class="card-title" id="formTitle">新增捐款 / 捐贈物資</h2>
+          <button class="btn btn-small" id="btnCancelEdit" style="display:none;">取消修改</button>
         </div>
 
-        <div id="formAlert" class="status-banner"></div>
+        <div id="formAlert" class="status-banner" role="status" aria-live="polite"></div>
 
         <form id="donationForm">
           <input type="hidden" id="editId" value="" />
 
-          <div class="form-group">
-            <label class="form-label" for="inputDonor">1. 捐款人姓名或單位職稱 *</label>
-            <input
-              type="text"
-              id="inputDonor"
-              class="form-input"
-              placeholder="例如：黃春嫺校長、校友 劉華明先生、關西鎮農會"
-              required
-              autocomplete="off"
-            />
-            <div class="quick-tags">
-              <span class="chip" data-prefix="校友 ">+ 校友</span>
-              <span class="chip" data-prefix="家長會">+ 家長會</span>
-              <span class="chip" data-prefix="前家長會長 ">+ 前家長會長</span>
-              <span class="chip" data-prefix="東平社區發展協會">+ 東平社區協會</span>
-              <span class="chip" data-prefix="東平里">+ 東平里</span>
-              <span class="chip" data-prefix="本校不具名家長">+ 本校不具名家長</span>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label class="form-label" for="inputRaw">2. 捐款金額（純數字自動轉國字大寫）或捐贈物資 *</label>
-            <input
-              type="text"
-              id="inputRaw"
-              class="form-input"
-              placeholder="輸入數字如 1000，或輸入物資如：仙草茶二桶"
-              required
-              autocomplete="off"
-            />
-            <div class="quick-tags">
-              <span class="chip" data-amount="500">$500</span>
-              <span class="chip" data-amount="1000">$1,000</span>
-              <span class="chip" data-amount="2000">$2,000</span>
-              <span class="chip" data-amount="3000">$3,000</span>
-              <span class="chip" data-amount="5000">$5,000</span>
-              <span class="chip" data-amount="6000">$6,000</span>
-              <span class="chip" data-amount="10000">$10,000</span>
-              <span class="chip" data-amount="20000">$20,000</span>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label class="form-label" for="inputDisplay">3. 大屏紅榜實際顯示文字（自動產生，可手動微調）</label>
-            <input
-              type="text"
-              id="inputDisplay"
-              class="form-input"
-              placeholder="例如：禮金壹仟元整"
-              required
-            />
-          </div>
-
-          <!-- 即時預覽區 -->
-          <div class="live-preview-box">
+          <div class="form-with-preview">
             <div>
-              <div style="font-size:12px; font-weight:700; color:#8e1111; margin-bottom:4px;">👀 大屏紅紙即時預覽：</div>
-              <div style="font-size:14px; color:#333;">
-                感謝：<strong id="prevDonorText" style="color:#b71c1c;">（請輸入捐款人）</strong><br/>
-                捐贈：<strong id="prevGiftText" style="color:#b71c1c;">（請輸入金額或物資）</strong>
+              <div class="form-group">
+                <label class="form-label" for="inputDonor">捐款人姓名或單位職稱</label>
+                <input
+                  type="text"
+                  id="inputDonor"
+                  class="form-input"
+                  placeholder="例如：校友 劉華明先生、關西鎮農會"
+                  required
+                  autocomplete="off"
+                />
+                <div class="quick-tags">
+                  <button type="button" class="chip" data-prefix="校友 ">校友</button>
+                  <button type="button" class="chip" data-prefix="家長會">家長會</button>
+                  <button type="button" class="chip" data-prefix="前家長會長 ">前家長會長</button>
+                  <button type="button" class="chip" data-prefix="東平社區發展協會">東平社區協會</button>
+                  <button type="button" class="chip" data-prefix="東平里">東平里</button>
+                  <button type="button" class="chip" data-prefix="本校不具名家長">本校不具名家長</button>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="inputRaw">
+                  捐款金額或捐贈物資
+                  <span class="form-hint">純數字會自動轉成國字大寫；物資請直接輸入品名數量</span>
+                </label>
+                <input
+                  type="text"
+                  id="inputRaw"
+                  class="form-input"
+                  placeholder="例如：1000，或 仙草茶二桶"
+                  required
+                  autocomplete="off"
+                />
+                <div class="quick-tags">
+                  <button type="button" class="chip num" data-amount="500">500</button>
+                  <button type="button" class="chip num" data-amount="1000">1,000</button>
+                  <button type="button" class="chip num" data-amount="2000">2,000</button>
+                  <button type="button" class="chip num" data-amount="3000">3,000</button>
+                  <button type="button" class="chip num" data-amount="5000">5,000</button>
+                  <button type="button" class="chip num" data-amount="6000">6,000</button>
+                  <button type="button" class="chip num" data-amount="10000">10,000</button>
+                  <button type="button" class="chip num" data-amount="20000">20,000</button>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="inputDisplay">
+                  大屏紅條顯示文字
+                  <span class="form-hint">自動產生，可手動微調</span>
+                </label>
+                <input
+                  type="text"
+                  id="inputDisplay"
+                  class="form-input"
+                  placeholder="例如：禮金壹仟元整"
+                  required
+                />
               </div>
             </div>
-            <div class="preview-strip">
-              <div style="font-size:12px; border-bottom:1px solid rgba(255,215,0,0.5); margin-bottom:4px;">捐 感<br/>贈 謝</div>
-              <div style="font-size:13px;" id="prevTypeBadge">禮金 / 物資</div>
+
+            <!-- 紅條即時預覽：登錄後大屏上的樣子 -->
+            <div class="preview-col" aria-label="大屏紅條即時預覽">
+              <div class="preview-strip">
+                <div class="ps-labels">
+                  <div><span>捐</span><span>贈</span></div>
+                  <div><span>感</span><span>謝</span></div>
+                </div>
+                <div class="ps-body">
+                  <div class="ps-col" id="prevGiftText">金額或物資</div>
+                  <div class="ps-col" id="prevDonorText">捐款人芳名</div>
+                </div>
+              </div>
+              <p class="preview-caption">大屏紅條預覽<br /><span id="prevTypeBadge">禮金 / 物資</span></p>
             </div>
           </div>
 
-          <button type="submit" class="btn btn-primary" style="width: 100%;" id="btnSubmit">
-            ➕ 立即登錄並同步至大屏 (Enter)
+          <button type="submit" class="btn btn-primary" id="btnSubmit">
+            立即登錄並同步至大屏 (Enter)
           </button>
         </form>
       </div>
@@ -500,7 +597,7 @@
       <!-- 大屏版面遠端控制與 GAS 設定 -->
       <div class="card">
         <div class="card-header">
-          <div class="card-title">⚙️ Google GAS 後台連線 & 大屏設定</div>
+          <h2 class="card-title">雲端連線與大屏設定</h2>
         </div>
 
         <div class="form-group">
@@ -509,29 +606,31 @@
             type="url"
             id="inputGasUrl"
             class="form-input"
-            style="font-size:13px;"
+            style="font-size:14px;"
             placeholder="https://script.google.com/macros/s/xxxxxx/exec"
           />
-          <div style="display:flex; gap:8px; margin-top:8px; flex-wrap:wrap;">
-            <button type="button" class="btn btn-secondary" id="btnSaveGas">💾 儲存並連線測試</button>
-            <button type="button" class="btn btn-secondary" id="btnCopyShareUrl" title="複製已綁定此 GAS 網址的大屏網頁連結，傳到任何電腦或手機點開即可直接看最新芳名錄！">🔗 複製大屏專屬分享網址</button>
-            <button type="button" class="btn btn-secondary" id="btnPushLocalToGas" title="將目前畫面上的清單整批覆寫同步至 Google 試算表">☁️ 同步目前清單至試算表</button>
-            <a href="#" target="_blank" class="btn btn-secondary" id="btnOpenSheet" style="display:none; color:#1b5e20; border-color:#a5d6a7; background:#e8f5e9;">📊 開啟雲端試算表</a>
+          <div class="button-row" style="margin-top:10px;">
+            <button type="button" class="btn btn-small" id="btnSaveGas">儲存並連線測試</button>
+            <button type="button" class="btn btn-small" id="btnCopyShareUrl" title="複製已綁定此 GAS 網址的大屏網頁連結，傳到任何電腦或手機點開即可直接看最新芳名錄">複製大屏分享網址</button>
+            <button type="button" class="btn btn-small" id="btnPushLocalToGas" title="將目前畫面上的清單整批覆寫同步至 Google 試算表">同步目前清單至試算表</button>
+            <a href="#" target="_blank" class="btn btn-small" id="btnOpenSheet" style="display:none;">開啟雲端試算表</a>
           </div>
-          <p style="font-size:12px; color:var(--text-muted); margin-top:6px; line-height:1.5;">
-            💡 若在同一台電腦同時開啟「後台」與「大屏」，即使不填 GAS 網址也能<strong>0秒即時連動</strong>；填寫 GAS 網址後，即可跨電腦將資料永久存於 Google 試算表並供 GitHub 前台每 5 秒抓取。
+          <p class="note">
+            同一台電腦同時開啟「後台」與「大屏」時，不填 GAS 網址也能即時連動；填寫後資料會存進 Google 試算表，任何裝置上的大屏每 5 秒自動更新。
           </p>
         </div>
 
-        <hr style="border:none; border-top:1px solid #eee; margin:16px 0;" />
-
-        <div class="form-group" style="margin-bottom:0;">
-          <label class="form-label">🖥️ 遠端控制大屏顯示樣式</label>
-          <div style="display:flex; flex-wrap:wrap; gap:8px;">
-            <button type="button" class="btn btn-secondary" id="btnRemoteVertical">📜 傳統紅紙直書風</button>
-            <button type="button" class="btn btn-secondary" id="btnRemoteHorizontal">🪪 現代喜慶橫卡風</button>
-            <button type="button" class="btn btn-secondary" id="btnRemoteFull">🔍 切換全版/露出底標</button>
+        <div class="section-gap">
+          <div class="form-label">遠端切換大屏顯示樣式</div>
+          <div class="button-row">
+            <button type="button" class="btn btn-small" id="btnRemoteVertical">傳統紅條直書</button>
+            <button type="button" class="btn btn-small" id="btnRemoteHorizontal">喜慶橫式紅金卡</button>
+            <button type="button" class="btn btn-small" id="btnRemoteFull">切換標準 / 最大化版面</button>
+            <button type="button" class="btn btn-small" id="btnRemoteInk">切換墨黑 / 金字</button>
+            <button type="button" class="btn btn-small" id="btnRemoteFontMinus" aria-label="大屏字級調小">字級 A-</button>
+            <button type="button" class="btn btn-small" id="btnRemoteFontPlus" aria-label="大屏字級調大">字級 A+</button>
           </div>
+          <p class="note">按下後，同一台電腦的大屏立即切換；其他電腦或投影機上的大屏約 5 秒內跟著切換。</p>
         </div>
       </div>
     </div>
@@ -539,21 +638,8 @@
     <!-- 右欄：目前已登錄芳名錄清單與管理 -->
     <div class="card">
       <div class="card-header">
-        <div class="card-title">📋 已登錄捐款芳名錄清單</div>
-        <div style="display:flex; gap:8px; flex-wrap:wrap;">
-          <button type="button" class="btn btn-secondary" id="btnLoadDemo21" style="font-size:12.5px; padding:6px 12px;">
-            載入照片紅榜 (21筆)
-          </button>
-          <button type="button" class="btn btn-secondary" id="btnLoadDemo94" style="font-size:12.5px; padding:6px 12px;">
-            載入71週年全名單 (94筆)
-          </button>
-          <button type="button" class="btn btn-secondary" id="btnExportCsv" style="font-size:12.5px; padding:6px 12px;">
-            📥 匯出 Excel (CSV)
-          </button>
-          <button type="button" class="btn btn-danger" id="btnClearAll" style="font-size:12.5px; padding:6px 12px;">
-            🗑️ 清空全部 (開始72週年正式登錄)
-          </button>
-        </div>
+        <h2 class="card-title">已登錄芳名錄</h2>
+        <button type="button" class="btn btn-small" id="btnExportCsv">匯出 Excel (CSV)</button>
       </div>
 
       <!-- 統計列 -->
@@ -573,28 +659,37 @@
       </div>
 
       <div class="table-toolbar">
-        <input type="search" id="searchInput" class="search-input" placeholder="🔍 搜尋捐款人姓名或捐贈內容..." />
-        <span style="font-size:13px; color:var(--text-muted);" id="lastSyncTimeText">準備就緒</span>
+        <input type="search" id="searchInput" class="search-input" placeholder="搜尋捐款人姓名或捐贈內容" aria-label="搜尋捐款人姓名或捐贈內容" />
+        <span class="sync-note" id="lastSyncTimeText">準備就緒</span>
       </div>
+      <p class="note order-hint">要調整大屏上的排列順序，直接改「順序」欄的數字再按 Enter（1 是第一張）。</p>
 
       <div class="table-wrapper">
         <table>
           <thead>
             <tr>
-              <th style="width:56px;">序號</th>
+              <th class="order">順序</th>
               <th>捐款人 / 單位芳名</th>
               <th style="width:76px;">類別</th>
-              <th>大屏紅榜顯示內容</th>
-              <th style="width:140px; text-align:right;">操作</th>
+              <th>大屏紅條顯示內容</th>
+              <th style="width:120px;">操作</th>
             </tr>
           </thead>
           <tbody id="donorTableBody"></tbody>
         </table>
       </div>
+
+      <!-- 測試資料與重設：會覆寫整份清單，放在最後 -->
+      <div class="list-footer">
+        <span class="label">測試資料</span>
+        <button type="button" class="btn btn-small" id="btnLoadDemo21">載入照片紅榜 21 筆</button>
+        <button type="button" class="btn btn-small" id="btnLoadDemo94">載入 71 週年全名單 94 筆</button>
+        <button type="button" class="btn btn-small btn-danger" id="btnClearAll">清空全部，開始 72 週年正式登錄</button>
+      </div>
     </div>
   </div>
 
-  <script src="shared.js"></script>
+  <script src="shared.js?v=20261112b"></script>
   <script>
     (function () {
       const inputDonor = document.getElementById('inputDonor');
@@ -636,9 +731,9 @@
       function updateConnectionBadge() {
         const url = getGasUrl();
         if (url) {
-          connectionBadge.textContent = '☁️ 已連結 Google GAS 雲端試算表（每5秒跨裝置自動同步）';
+          connectionBadge.textContent = '已連結 Google GAS 雲端試算表（每5秒跨裝置自動同步）';
         } else {
-          connectionBadge.textContent = '🟢 本機即時連動模式（同電腦大屏 0 秒同步，亦可設定 GAS 雲端）';
+          connectionBadge.textContent = '本機即時連動模式（同電腦大屏 0 秒同步，亦可設定 GAS 雲端）';
         }
       }
 
@@ -652,9 +747,26 @@
           inputDisplay.value = formatDonationDisplay(rawVal, type);
         }
 
-        prevDonorText.textContent = donorVal || '（請輸入捐款人）';
-        prevGiftText.textContent = inputDisplay.value.trim() || '（請輸入金額或物資）';
-        prevTypeBadge.textContent = type === '禮金' ? '💰 禮金' : '🎁 物資';
+        prevDonorText.textContent = toVerticalPunctuation(donorVal) || '捐款人芳名';
+        prevDonorText.classList.toggle('is-placeholder', !donorVal);
+        setGiftPreview();
+        prevTypeBadge.textContent = !rawVal ? '禮金 / 物資' : (type === '禮金' ? '類別：禮金' : '類別：物資');
+        fitPreviewCol(prevDonorText);
+      }
+
+      function setGiftPreview() {
+        const giftVal = inputDisplay.value.trim();
+        prevGiftText.textContent = toVerticalPunctuation(giftVal) || '金額或物資';
+        prevGiftText.classList.toggle('is-placeholder', !giftVal);
+        fitPreviewCol(prevGiftText);
+      }
+
+      // 預覽紅條：字數多時自動縮小字級，與大屏一樣不截斷
+      function fitPreviewCol(el) {
+        const len = Array.from(el.textContent).length;
+        const availH = el.parentElement.clientHeight - 16;
+        const size = Math.max(9, Math.min(20, availH / (len * 1.05)));
+        el.style.fontSize = size.toFixed(1) + 'px';
       }
 
       inputDonor.addEventListener('input', updateLivePreview);
@@ -664,7 +776,7 @@
       });
       inputDisplay.addEventListener('input', () => {
         displayManuallyEdited = true;
-        prevGiftText.textContent = inputDisplay.value.trim() || '（請輸入金額或物資）';
+        setGiftPreview();
       });
 
       // 快速職稱前綴按鈕
@@ -721,7 +833,7 @@
         const reversed = [...filtered].reverse();
 
         if (reversed.length === 0) {
-          donorTableBody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:28px; color:#888;">目前沒有符合的捐款芳名錄資料</td></tr>`;
+          donorTableBody.innerHTML = `<tr><td colspan="5" class="empty">目前沒有符合的捐款芳名錄資料</td></tr>`;
           return;
         }
 
@@ -729,17 +841,17 @@
           const isCash = item.type === '禮金' || /^\d+$/.test(String(item.rawContent || '').replace(/[,，\s]/g, ''));
           return `
             <tr>
-              <td style="font-weight:700; color:#777;">#${item.order}</td>
-              <td style="font-weight:900; font-size:15.5px; color:#221111;">${escapeHtml(item.donor)}</td>
-              <td>
+              <td class="order"><input type="number" class="order-input" min="1" max="${donations.length}" value="${item.order}" aria-label="${escapeHtml(item.donor)} 在大屏上的順序" onchange="window.moveDonation('${escapeHtml(item.id)}', this.value)" /></td>
+              <td class="donor">${escapeHtml(item.donor)}</td>
+              <td class="type">
                 <span class="badge ${isCash ? 'badge-cash' : 'badge-goods'}">
                   ${isCash ? '禮金' : '物資'}
                 </span>
               </td>
-              <td style="font-weight:700; color:#b71c1c;">${escapeHtml(item.displayContent || item.rawContent)}</td>
-              <td style="text-align:right; white-space:nowrap;">
-                <button type="button" class="btn btn-secondary" style="padding:4px 9px; font-size:12px;" onclick="window.editDonation('${escapeHtml(item.id)}')">✏️ 修改</button>
-                <button type="button" class="btn btn-danger" style="padding:4px 9px; font-size:12px;" onclick="window.deleteDonation('${escapeHtml(item.id)}')">🗑️ 刪除</button>
+              <td class="gift">${escapeHtml(item.displayContent || item.rawContent)}</td>
+              <td class="actions">
+                <button type="button" class="btn-text" onclick="window.editDonation('${escapeHtml(item.id)}')">修改</button>
+                <button type="button" class="btn-text danger" onclick="window.deleteDonation('${escapeHtml(item.id)}')">刪除</button>
               </td>
             </tr>
           `;
@@ -781,7 +893,7 @@
           saveLocalDonations(donations);
           renderTable();
           resetForm();
-          showAlert(`✅ 已更新「${donor}」的芳名錄資料！`);
+          showAlert(`已更新「${donor}」的芳名錄資料！`);
 
           // 若有設定 GAS，背景同步至雲端
           await syncActionToGas({ action: 'update', id: editingId, donor, type, rawContent, displayContent });
@@ -800,7 +912,7 @@
           saveLocalDonations(donations);
           renderTable();
           resetForm();
-          showAlert(`🎉 已成功登錄「${donor} — ${displayContent}」！大屏已同步更新。`);
+          showAlert(`已成功登錄「${donor} — ${displayContent}」！大屏已同步更新。`);
 
           await syncActionToGas({ action: 'add', ...newItem });
         }
@@ -812,8 +924,8 @@
         inputRaw.value = '';
         inputDisplay.value = '';
         displayManuallyEdited = false;
-        formTitle.textContent = '✍️ 新增捐款 / 捐贈物資';
-        btnSubmit.textContent = '➕ 立即登錄並同步至大屏 (Enter)';
+        formTitle.textContent = '新增捐款 / 捐贈物資';
+        btnSubmit.textContent = '立即登錄並同步至大屏 (Enter)';
         btnCancelEdit.style.display = 'none';
         updateLivePreview();
         inputDonor.focus();
@@ -830,8 +942,8 @@
         inputRaw.value = item.rawContent;
         inputDisplay.value = item.displayContent || formatDonationDisplay(item.rawContent, item.type);
         displayManuallyEdited = true;
-        formTitle.textContent = `✏️ 修改芳名錄：${item.donor}`;
-        btnSubmit.textContent = '💾 儲存修改並更新大屏';
+        formTitle.textContent = `修改芳名錄：${item.donor}`;
+        btnSubmit.textContent = '儲存修改並更新大屏';
         btnCancelEdit.style.display = 'inline-flex';
         updateLivePreview();
         inputDonor.focus();
@@ -846,7 +958,7 @@
         donations = donations.filter(d => String(d.id) !== String(id));
         saveLocalDonations(donations);
         renderTable();
-        showAlert(`🗑️ 已刪除「${item.donor}」`);
+        showAlert(`已刪除「${item.donor}」`);
         await syncActionToGas({ action: 'delete', id });
       };
 
@@ -855,7 +967,7 @@
         const gasUrl = getGasUrl();
         if (!gasUrl) return;
         try {
-          lastSyncTimeText.textContent = '☁️ 正在同步至 Google 試算表...';
+          lastSyncTimeText.textContent = '正在同步至 Google 試算表...';
           const res = await fetch(gasUrl, {
             method: 'POST',
             headers: { 'Content-Type': 'text/plain;charset=utf-8' },
@@ -872,11 +984,11 @@
               donations = data.items;
               saveLocalDonations(donations);
               renderTable();
-              lastSyncTimeText.textContent = `☁️ 雲端已同步 (${new Date().toLocaleTimeString('zh-TW', { hour12: false })})`;
+              lastSyncTimeText.textContent = `雲端已同步 (${new Date().toLocaleTimeString('zh-TW', { hour12: false })})`;
             }
           }
         } catch (err) {
-          lastSyncTimeText.textContent = '⚠️ 雲端同步失敗，已保留於本機快取';
+          lastSyncTimeText.textContent = '雲端同步失敗，已保留於本機快取';
         }
       }
 
@@ -890,7 +1002,7 @@
           return;
         }
         try {
-          showAlert('⏳ 正在連線測試 Google 試算表後台...');
+          showAlert('正在連線測試 Google 試算表後台...');
           const sep = url.includes('?') ? '&' : '?';
           const res = await fetch(`${url}${sep}action=list&refresh=1&_t=${Date.now()}`);
           const data = await res.json();
@@ -905,12 +1017,12 @@
               saveLocalDonations(donations);
               renderTable();
             }
-            showAlert(`✅ GAS 雲端連線成功！目前雲端共有 ${data.items ? data.items.length : 0} 筆資料。`);
+            showAlert(`GAS 雲端連線成功！目前雲端共有 ${data.items ? data.items.length : 0} 筆資料。`);
           } else {
-            showAlert(`⚠️ GAS 回傳異常：${data.message || '未知錯誤'}`, 'error');
+            showAlert(`GAS 回傳異常：${data.message || '未知錯誤'}`, 'error');
           }
         } catch (err) {
-          showAlert('❌ 無法連線至 GAS 網址，請確認部署權限已設為「所有人 (Anyone)」', 'error');
+          showAlert('無法連線至 GAS 網址，請確認部署權限已設為「所有人 (Anyone)」', 'error');
         }
       });
 
@@ -925,7 +1037,7 @@
         const baseUrl = window.location.href.split('?')[0].replace(/admin\.html$/i, 'index.html');
         const shareUrl = `${baseUrl}?gas=${encodeURIComponent(url)}`;
         navigator.clipboard.writeText(shareUrl).then(() => {
-          showAlert('🔗 已複製「大屏專屬分享網址」！傳到任何電腦或手機點開即可自動連線查閱。');
+          showAlert('已複製「大屏專屬分享網址」！傳到任何電腦或手機點開即可自動連線查閱。');
         }).catch(() => {
           prompt('請複製以下大屏專屬網址：', shareUrl);
         });
@@ -940,26 +1052,109 @@
         }
         if (!confirm(`確定要將目前畫面上的 ${donations.length} 筆資料同步覆寫至 Google 試算表嗎？`)) return;
         await syncActionToGas({ action: 'replaceAll', items: donations });
-        showAlert('✅ 雲端試算表同步完成！');
+        showAlert('雲端試算表同步完成！');
       });
 
       // 遠端切換大屏樣式
       document.getElementById('btnRemoteVertical').addEventListener('click', () => {
-        saveDisplaySettings({ cardStyle: 'vertical-red' });
-        showAlert('🖥️ 已將大屏切換為「傳統紅紙直書風」');
+        pushDisplaySettings({ cardStyle: 'vertical-red' });
+        showAlert('已將大屏切換為「傳統紅條直書」');
       });
 
       document.getElementById('btnRemoteHorizontal').addEventListener('click', () => {
-        saveDisplaySettings({ cardStyle: 'horizontal-card' });
-        showAlert('🖥️ 已將大屏切換為「現代喜慶橫卡風」');
+        pushDisplaySettings({ cardStyle: 'horizontal-card' });
+        showAlert('已將大屏切換為「喜慶橫式紅金卡」');
       });
 
       document.getElementById('btnRemoteFull').addEventListener('click', () => {
         const cur = getDisplaySettings();
         const next = cur.headerMode === 'full' ? 'compact' : 'full';
-        saveDisplaySettings({ headerMode: next });
-        showAlert(`🖥️ 已切換大屏版面模式為：${next === 'full' ? '全螢幕最大化' : '露出底部邀請卡標語'}`);
+        pushDisplaySettings({ headerMode: next });
+        showAlert(`已切換大屏版面模式為：${next === 'full' ? '最大化' : '標準（含校慶標語列）'}`);
       });
+
+      document.getElementById('btnRemoteInk').addEventListener('click', () => {
+        const cur = getDisplaySettings();
+        const next = (cur.inkMode || 'black') === 'black' ? 'gold' : 'black';
+        pushDisplaySettings({ inkMode: next });
+        showAlert(`已將大屏字色切換為：${next === 'gold' ? '喜慶金字' : '傳統墨黑'}`);
+      });
+
+      function remoteFontStep(delta) {
+        const cur = getDisplaySettings();
+        const next = Math.min(1.4, Math.max(0.75, (cur.fontScaleAdjust || 1.0) + delta));
+        pushDisplaySettings({ fontScaleAdjust: Number(next.toFixed(2)) });
+        showAlert(`已調整大屏字級倍率為 ${next.toFixed(2)}`);
+      }
+      document.getElementById('btnRemoteFontMinus').addEventListener('click', () => remoteFontStep(-0.06));
+      document.getElementById('btnRemoteFontPlus').addEventListener('click', () => remoteFontStep(0.06));
+
+      // 儲存顯示設定：同一台電腦的大屏立即生效，並送到雲端讓其他裝置上的大屏在 5 秒內跟著切換
+      function pushDisplaySettings(partial) {
+        const merged = saveDisplaySettings(Object.assign({}, partial, { updatedAt: Date.now() }));
+        syncSettingsToGas(merged);
+        return merged;
+      }
+
+      async function syncSettingsToGas(merged) {
+        const gasUrl = getGasUrl();
+        if (!gasUrl) return;
+        try {
+          const res = await fetch(gasUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            body: JSON.stringify({ action: 'setSettings', settings: merged })
+          });
+          const data = await res.json();
+          if (!data || data.status !== 'ok') {
+            showAlert('雲端 GAS 還是舊版，樣式只會同步到這台電腦上的大屏。請把新版 Code.gs 重新部署後再試。', 'error');
+          }
+        } catch (err) {
+          showAlert('樣式設定送到雲端失敗，目前只同步到這台電腦上的大屏。', 'error');
+        }
+      }
+
+      // 手動調整順序：把某一筆移到指定序號，大屏依此順序排列
+      window.moveDonation = async function (id, newPosition) {
+        const from = donations.findIndex(d => String(d.id) === String(id));
+        if (from === -1) return;
+        const to = Math.min(donations.length, Math.max(1, parseInt(newPosition, 10) || (from + 1))) - 1;
+        if (to === from) {
+          renderTable();
+          return;
+        }
+        const [moved] = donations.splice(from, 1);
+        donations.splice(to, 0, moved);
+        saveLocalDonations(donations);
+        renderTable();
+        showAlert(`已將「${moved.donor}」移到第 ${to + 1} 位，大屏已同步更新。`);
+        await syncReorderToGas();
+      };
+
+      async function syncReorderToGas() {
+        const gasUrl = getGasUrl();
+        if (!gasUrl) return;
+        try {
+          lastSyncTimeText.textContent = '正在同步順序至 Google 試算表...';
+          const res = await fetch(gasUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            body: JSON.stringify({ action: 'reorder', ids: donations.map(d => String(d.id)) })
+          });
+          const data = await res.json();
+          if (data && data.status === 'ok' && Array.isArray(data.items)) {
+            donations = data.items;
+            saveLocalDonations(donations);
+            renderTable();
+            lastSyncTimeText.textContent = `雲端順序已同步 (${new Date().toLocaleTimeString('zh-TW', { hour12: false })})`;
+          } else {
+            // 舊版 GAS 沒有 reorder：改用整批覆寫達成相同結果
+            await syncActionToGas({ action: 'replaceAll', items: donations });
+          }
+        } catch (err) {
+          lastSyncTimeText.textContent = '雲端同步失敗，已保留於本機快取';
+        }
+      }
 
       // 載入測試資料與清空按鈕
       document.getElementById('btnLoadDemo21').addEventListener('click', () => {
@@ -967,7 +1162,7 @@
         donations = DEMO_71_DONATIONS.slice(0, 21);
         saveLocalDonations(donations);
         renderTable();
-        showAlert('✅ 已載入照片紅榜 21 筆資料！可切至大屏查看效果。');
+        showAlert('已載入照片紅榜 21 筆資料！可切至大屏查看效果。');
       });
 
       document.getElementById('btnLoadDemo94').addEventListener('click', () => {
@@ -975,7 +1170,7 @@
         donations = [...DEMO_71_DONATIONS];
         saveLocalDonations(donations);
         renderTable();
-        showAlert('✅ 已載入 71 週年完整 94 筆資料！');
+        showAlert('已載入 71 週年完整 94 筆資料！');
       });
 
       document.getElementById('btnClearAll').addEventListener('click', async () => {
@@ -983,7 +1178,7 @@
         donations = [];
         saveLocalDonations(donations);
         renderTable();
-        showAlert('✨ 已清空資料，可以開始輸入 72 週年第一筆捐款芳名錄！');
+        showAlert('已清空資料，可以開始輸入 72 週年第一筆捐款芳名錄！');
         await syncActionToGas({ action: 'replaceAll', items: [] });
       });
 
@@ -1012,7 +1207,7 @@
         const url = getGasUrl();
         if (!url) return;
         try {
-          lastSyncTimeText.textContent = '☁️ 正在從 Google 試算表載入最新名單...';
+          lastSyncTimeText.textContent = '正在從 Google 試算表載入最新名單...';
           const sep = url.includes('?') ? '&' : '?';
           const res = await fetch(`${url}${sep}action=list&_t=${Date.now()}`);
           const data = await res.json();
@@ -1027,10 +1222,13 @@
               saveLocalDonations(donations);
               renderTable();
             }
-            lastSyncTimeText.textContent = `☁️ 已連線雲端試算表 (共 ${data.items ? data.items.length : 0} 筆)`;
+            if (data.settings && data.settings.updatedAt) {
+              saveDisplaySettings(data.settings);
+            }
+            lastSyncTimeText.textContent = `已連線雲端試算表 (共 ${data.items ? data.items.length : 0} 筆)`;
           }
         } catch (e) {
-          lastSyncTimeText.textContent = '⚠️ 雲端連線待命，目前顯示本機清單';
+          lastSyncTimeText.textContent = '雲端連線待命，目前顯示本機清單';
         }
       }
 

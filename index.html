@@ -6,18 +6,26 @@
   <title>新竹縣關西鎮太平國民小學 72週年校慶 - 捐款芳名錄即時大屏</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@600;700;900&family=Noto+Sans+TC:wght@500;700;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+TC:wght@700&family=Noto+Sans+TC:wght@500;700;900&display=swap" rel="stylesheet">
   <style>
+    /* ==========================================================
+       設計語彙：把實體「紅紙底板＋粉紅海報紙＋紅條＋五枚圓章」的捐款榜搬上螢幕。
+       全部使用平塗色塊（不用漸層、光暈、陰影），紅金兩色為主，邀請卡的天藍作襯底。
+       字體只用兩套：楷體（典禮用字：標題圓章、感謝／捐贈）＋黑體（姓名與金額，投影最清楚）。
+       ========================================================== */
     :root {
-      --red-primary: #c62020;
-      --red-dark: #8e1111;
-      --red-strip: linear-gradient(180deg, #d82626 0%, #b71818 100%);
-      --gold-light: #fff3b0;
-      --gold-main: #ffd54f;
-      --gold-Rich: #f5b014;
-      --ink-black: #1a0909;
+      --red: #c8161d;          /* 紅紙底板 */
+      --red-deep: #a80f17;     /* 金字模式的紅條 */
+      --paper-red: #dc2f2b;    /* 墨字模式的紅條（朱紅，黑字對比較高） */
+      --pink: #fbd0da;         /* 粉紅海報紙 */
+      --gold: #f7c53c;         /* 金 */
+      --gold-pale: #ffe394;    /* 淺金（紅底上的次要文字） */
+      --cream: #fff6e0;        /* 紅底上的主要文字 */
+      --ink: #1c0a0a;          /* 墨 */
+      --sky: #aee2f5;          /* 邀請卡天藍 */
+      --kai: 'LXGW WenKai TC', 'DFKai-SB', '標楷體', 'BiauKai', serif;
+      --sans: 'Noto Sans TC', 'Microsoft JhengHei', '微軟正黑體', sans-serif;
       --card-font-size: 20px;
-      --header-font-size: 16px;
     }
 
     * {
@@ -31,8 +39,9 @@
       width: 100vw;
       height: 100vh;
       overflow: hidden;
-      font-family: 'Noto Serif TC', 'DFKai-SB', '標楷體', 'BiauKai', serif;
-      background-color: #aee2f5;
+      font-family: var(--sans);
+      color: var(--ink);
+      background-color: var(--sky);
     }
 
     /* 邀請卡背景圖層 */
@@ -41,18 +50,9 @@
       inset: 0;
       background-image: url('72周年校慶邀請卡_p1.jpg');
       background-size: cover;
-      background-position: center center;
+      background-position: center top;
       background-repeat: no-repeat;
       z-index: 0;
-    }
-
-    /* 柔和光暈遮罩，確保邀請卡色彩鮮明同時讓芳名錄清晰易讀 */
-    .bg-overlay {
-      position: fixed;
-      inset: 0;
-      background: radial-gradient(circle at center, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.04) 100%);
-      z-index: 1;
-      pointer-events: none;
     }
 
     /* 主容器：100vw x 100vh 單頁不捲動 */
@@ -63,167 +63,202 @@
       height: 100vh;
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
-      padding: 1.0vh 1.6vw 1.2vh 1.6vw;
+      padding: 1.8vh 1.6vw;
     }
 
     /* 最大化版面模式（當筆數極多或長輩想看更大字時） */
     body.layout-full .screen-wrapper {
-      padding: 0.6vh 1.0vw 0.8vh 1.0vw;
+      padding: 0.6vh 0.5vw;
     }
 
-    /* 頂部標題區：結合校徽與傳統五圓金章「捐 款 芳 名 錄」 */
+    /* 紅紙底板：標題、粉紅海報紙、底部標語都貼在同一張紅紙上 */
+    .red-board {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      background: var(--red);
+      border-radius: 6px;
+      padding: 0 clamp(8px, 0.9vw, 18px);
+    }
+
+    body.layout-full .red-board {
+      padding-bottom: clamp(6px, 0.8vh, 12px);
+    }
+
+    /* 頂部標題區：校徽與校名、五枚「捐 款 芳 名 錄」圓章、即時筆數 */
     .top-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      background: linear-gradient(90deg, rgba(168, 18, 18, 0.94) 0%, rgba(205, 32, 32, 0.96) 50%, rgba(168, 18, 18, 0.94) 100%);
-      border: 2.5px solid #ffd54f;
-      border-radius: 16px;
-      padding: 0.6vh 1.5vw;
-      box-shadow: 0 6px 20px rgba(120, 0, 0, 0.35), inset 0 0 15px rgba(255, 215, 0, 0.25);
+      gap: 1.2vw;
+      padding: 1.1vh 0.4vw;
       flex-shrink: 0;
-      margin-bottom: 0.9vh;
+    }
+
+    body.layout-full .top-header {
+      padding: 0.6vh 0.4vw;
     }
 
     .school-brand {
       display: flex;
       align-items: center;
       gap: 0.9vw;
+      flex: 1 1 0;
+      min-width: 0;
     }
 
     .school-emblem {
       height: 6.2vh;
-      width: auto;
+      width: 6.2vh;
+      flex-shrink: 0;
       background: #ffffff;
       border-radius: 50%;
       padding: 3px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
       object-fit: contain;
     }
 
     body.layout-full .school-emblem {
       height: 4.8vh;
+      width: 4.8vh;
     }
 
     .school-titles {
       display: flex;
       flex-direction: column;
+      min-width: 0;
+      line-height: 1.3;
     }
 
     .school-name {
-      color: #fff9db;
-      font-size: clamp(14px, 1.85vh, 26px);
-      font-weight: 900;
-      letter-spacing: 0.08em;
-      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+      color: var(--cream);
+      font-family: var(--kai);
+      font-size: clamp(15px, 2.5vh, 34px);
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .event-subtitle {
-      color: #ffd54f;
-      font-family: 'Noto Sans TC', sans-serif;
-      font-size: clamp(11px, 1.35vh, 18px);
+      color: var(--gold-pale);
+      font-size: clamp(12px, 1.6vh, 21px);
       font-weight: 700;
-      letter-spacing: 0.06em;
+      letter-spacing: 0.04em;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
-    /* 復刻照片中「捐 款 芳 名 錄」五個金色太陽圓章 */
+    body.layout-full .school-name { font-size: clamp(14px, 2.1vh, 28px); }
+    body.layout-full .event-subtitle { font-size: clamp(11px, 1.35vh, 18px); }
+
+    /* 五枚圓章：金色圓底＋鋸齒米白章面＋楷體墨字（照實體紅榜上的圓形剪紙） */
     .honor-medallions {
       display: flex;
       align-items: center;
       gap: clamp(6px, 0.9vw, 18px);
+      flex-shrink: 0;
+      font-weight: 700;
     }
 
     .medallion {
-      width: clamp(38px, 6.2vh, 72px);
-      height: clamp(38px, 6.2vh, 72px);
+      --seal: clamp(38px, 6.6vh, 78px);
+      position: relative;
+      width: var(--seal);
+      height: var(--seal);
       border-radius: 50%;
-      background: radial-gradient(circle, #fffde7 0%, #ffe082 62%, #ffb300 100%);
-      border: 3px solid #f8bbd0;
-      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.35), inset 0 0 6px #ff6f00;
+      background: var(--gold);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-family: 'DFKai-SB', '標楷體', 'Noto Serif TC', serif;
-      font-size: clamp(22px, 3.8vh, 46px);
-      font-weight: 900;
-      color: #1b0505;
-      text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
+      font-family: var(--kai);
+      font-size: calc(var(--seal) * 0.6);
+      line-height: 1;
+      color: var(--ink);
+    }
+
+    .medallion::before {
+      content: '';
+      position: absolute;
+      inset: 5%;
+      background: var(--cream);
+      clip-path: polygon(50.0% 0.0%, 55.9% 5.4%, 62.9% 1.7%, 67.2% 8.4%, 75.0% 6.7%, 77.4% 14.3%, 85.4% 14.6%, 85.7% 22.6%, 93.3% 25.0%, 91.6% 32.8%, 98.3% 37.1%, 94.6% 44.1%, 100.0% 50.0%, 94.6% 55.9%, 98.3% 62.9%, 91.6% 67.2%, 93.3% 75.0%, 85.7% 77.4%, 85.4% 85.4%, 77.4% 85.7%, 75.0% 93.3%, 67.2% 91.6%, 62.9% 98.3%, 55.9% 94.6%, 50.0% 100.0%, 44.1% 94.6%, 37.1% 98.3%, 32.8% 91.6%, 25.0% 93.3%, 22.6% 85.7%, 14.6% 85.4%, 14.3% 77.4%, 6.7% 75.0%, 8.4% 67.2%, 1.7% 62.9%, 5.4% 55.9%, 0.0% 50.0%, 5.4% 44.1%, 1.7% 37.1%, 8.4% 32.8%, 6.7% 25.0%, 14.3% 22.6%, 14.6% 14.6%, 22.6% 14.3%, 25.0% 6.7%, 32.8% 8.4%, 37.1% 1.7%, 44.1% 5.4%);
+    }
+
+    .medallion span {
+      position: relative;
     }
 
     body.layout-full .medallion {
-      width: clamp(32px, 4.8vh, 54px);
-      height: clamp(32px, 4.8vh, 54px);
-      font-size: clamp(18px, 3.0vh, 36px);
+      --seal: clamp(32px, 4.9vh, 56px);
     }
 
-    /* 右側即時狀態與統計 */
+    /* 右側即時筆數與連線狀態 */
     .header-status {
       display: flex;
       flex-direction: column;
       align-items: flex-end;
-      gap: 0.3vh;
-      font-family: 'Noto Sans TC', sans-serif;
+      gap: 0.2vh;
+      flex: 1 1 0;
+      min-width: 0;
     }
 
     .donor-counter {
-      background: rgba(0, 0, 0, 0.28);
-      border: 1px solid rgba(255, 213, 79, 0.6);
-      color: #fffdf0;
-      padding: 0.3vh 0.85vw;
-      border-radius: 999px;
-      font-size: clamp(12px, 1.5vh, 20px);
+      color: var(--cream);
+      font-size: clamp(13px, 1.9vh, 24px);
       font-weight: 700;
+      letter-spacing: 0.04em;
+      white-space: nowrap;
+      line-height: 1.1;
     }
 
     .donor-counter strong {
-      color: #ffeb3b;
-      font-size: 1.15em;
-      margin: 0 3px;
+      color: var(--gold);
+      font-size: 1.9em;
+      font-weight: 900;
+      font-variant-numeric: tabular-nums;
+      margin: 0 0.15em;
+      vertical-align: -0.08em;
     }
+
+    body.layout-full .donor-counter strong { font-size: 1.5em; }
 
     .sync-indicator {
       display: flex;
       align-items: center;
       gap: 6px;
-      color: rgba(255, 255, 255, 0.9);
-      font-size: clamp(10px, 1.15vh, 14px);
+      color: var(--gold-pale);
+      font-size: clamp(11px, 1.25vh, 15px);
+      font-weight: 500;
+      white-space: nowrap;
     }
 
     .sync-dot {
       width: 8px;
       height: 8px;
+      flex-shrink: 0;
       border-radius: 50%;
-      background: #4caf50;
-      box-shadow: 0 0 8px #4caf50;
+      background: #7be08a;
       animation: pulseDot 2s infinite;
     }
 
-    .sync-dot.syncing {
-      background: #ffeb3b;
-      box-shadow: 0 0 10px #ffeb3b;
-    }
-
-    .sync-dot.offline {
-      background: #ff9800;
-      box-shadow: 0 0 8px #ff9800;
-    }
+    .sync-dot.syncing { background: var(--gold); }
+    .sync-dot.offline { background: #ffffff; animation: none; }
 
     @keyframes pulseDot {
-      0%, 100% { transform: scale(1); opacity: 1; }
-      50% { transform: scale(1.35); opacity: 0.7; }
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.45; }
     }
 
-    /* 中央芳名錄紅榜大底板（覆蓋邀請卡中央空白框，四周露出邀請卡繽紛插畫與底部標語） */
+    /* 中央粉紅海報紙（貼在紅紙底板上，所有紅條都貼在這一張） */
     .board-container {
       flex: 1;
       min-height: 0;
       width: 100%;
-      background: linear-gradient(180deg, rgba(255, 228, 232, 0.93) 0%, rgba(252, 212, 220, 0.93) 100%);
-      border: 4px solid #c62020;
-      outline: 2px solid #ffd54f;
-      border-radius: 14px;
-      box-shadow: 0 10px 32px rgba(0, 0, 0, 0.25), inset 0 0 24px rgba(198, 32, 32, 0.12);
+      background: var(--pink);
+      border-radius: 3px;
       padding: 8px;
       display: flex;
       flex-direction: column;
@@ -243,8 +278,8 @@
     }
 
     /* ==========================================================
-       樣式 A：傳統手寫紅榜直書風 (vertical-red)
-       完全還原照片：上方「感 捐 / 謝 贈」，右欄直書捐款人、左欄直書禮金或物資
+       樣式 A：傳統紅條直書 (vertical-red)
+       金色條頭「感謝／捐贈」，右欄直書捐款人、左欄直書禮金或物資
        ========================================================== */
     .donations-grid.style-vertical-red {
       direction: rtl; /* 傳統紅榜由右至左排列！也可切換由左至右 */
@@ -255,35 +290,32 @@
 
     .donor-card.vertical-red {
       direction: ltr;
-      background: linear-gradient(180deg, #d62424 0%, #bd1717 100%);
-      border: 1.5px solid rgba(255, 215, 64, 0.75);
-      border-radius: 5px;
-      box-shadow: 0 2px 5px rgba(105, 8, 8, 0.3);
+      background: var(--paper-red);
+      border-radius: 3px;
       display: flex;
       flex-direction: column;
-      padding: 4px 3px 5px 3px;
       position: relative;
       overflow: hidden;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
 
-    /* 頂部「感謝 / 捐贈」雙欄橫頭 */
+    .donor-card.vertical-red.gold-ink {
+      background: var(--red-deep);
+    }
+
+    /* 金色條頭「感謝 / 捐贈」 */
     .donor-card.vertical-red .strip-top-labels {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      border-bottom: 1px solid rgba(255, 224, 130, 0.45);
-      padding-bottom: 2px;
+      background: var(--gold);
+      padding: 4px 3px 3px;
       margin-bottom: 3px;
       flex-shrink: 0;
       text-align: center;
-      font-weight: 900;
+      font-family: var(--kai);
+      font-weight: 700;
       line-height: 1.08;
-      color: #140303;
+      color: var(--ink);
       font-size: calc(var(--card-font-size) * 0.78);
-    }
-
-    .donor-card.vertical-red.gold-ink .strip-top-labels {
-      color: #ffe57f;
     }
 
     .donor-card.vertical-red .label-col {
@@ -301,6 +333,7 @@
       grid-template-columns: 1fr 1fr;
       gap: 2px;
       width: 100%;
+      padding: 0 3px 5px;
     }
 
     .donor-card.vertical-red .vertical-col {
@@ -310,7 +343,7 @@
       align-items: center;
       justify-content: flex-start;
       font-weight: 900;
-      color: #110202;
+      color: var(--ink);
       font-size: var(--card-font-size);
       line-height: 1.05;
       letter-spacing: -0.02em;
@@ -320,23 +353,20 @@
     }
 
     .donor-card.vertical-red.gold-ink .vertical-col {
-      color: #fff8e1;
-      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.55);
+      color: var(--cream);
     }
 
-    .donor-card.vertical-red .donor-col {
-      border-left: 1px dashed rgba(255, 215, 64, 0.25);
+    .donor-card.vertical-red.gold-ink .gift-col {
+      color: var(--gold-pale);
     }
 
     /* ==========================================================
        樣式 B：喜慶橫式紅金卡 (horizontal-card)
-       適合長輩橫向閱讀，字體超清晰，每張卡片等高等寬
+       適合長輩橫向閱讀，每張卡片等高等寬
        ========================================================== */
     .donor-card.horizontal-card {
-      background: linear-gradient(135deg, #cf1f1f 0%, #a81212 100%);
-      border: 1.8px solid #ffd54f;
-      border-radius: 8px;
-      box-shadow: 0 3px 8px rgba(100, 0, 0, 0.25);
+      background: var(--paper-red);
+      border-radius: 4px;
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -350,23 +380,22 @@
       align-items: baseline;
       justify-content: space-between;
       gap: 4px;
-      border-bottom: 1px solid rgba(255, 213, 79, 0.35);
-      padding-bottom: 2px;
+      padding-bottom: 3px;
       margin-bottom: 2px;
     }
 
     .donor-card.horizontal-card .h-thanks-tag {
+      font-family: var(--kai);
       font-size: calc(var(--card-font-size) * 0.68);
-      color: #ffd54f;
+      color: var(--ink);
       font-weight: 700;
       flex-shrink: 0;
     }
 
     .donor-card.horizontal-card .h-donor-name {
       font-size: var(--card-font-size);
-      color: #ffffff;
+      color: var(--ink);
       font-weight: 900;
-      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -376,117 +405,161 @@
 
     .donor-card.horizontal-card .h-gift-row {
       font-size: calc(var(--card-font-size) * 0.92);
-      color: #ffeb3b;
-      font-weight: 900;
+      color: var(--ink);
+      font-weight: 700;
       text-align: right;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
     }
 
-    /* 新登錄芳名錄高亮金光特效 */
+    /* 橫式卡的喜慶金字：深紅底、米白姓名、金色金額 */
+    .donor-card.horizontal-card.gold-ink { background: var(--red-deep); }
+    .donor-card.horizontal-card.gold-ink .h-thanks-tag { color: var(--gold); }
+    .donor-card.horizontal-card.gold-ink .h-donor-name { color: var(--cream); }
+    .donor-card.horizontal-card.gold-ink .h-gift-row { color: var(--gold-pale); }
+
+    /* 新登錄芳名：金色實線外框跳動（不用光暈，投影時輪廓更清楚） */
     .donor-card.newly-added {
-      animation: newCardGlow 2.2s ease-in-out 4;
+      animation: newCardRing 2.2s ease-in-out 4;
       z-index: 5;
+      overflow: visible;
     }
 
-    @keyframes newCardGlow {
+    @keyframes newCardRing {
       0%, 100% {
-        box-shadow: 0 0 0 0 rgba(255, 235, 59, 0);
-        border-color: #ffd54f;
+        box-shadow: 0 0 0 0 var(--gold);
+        transform: scale(1);
       }
       50% {
-        box-shadow: 0 0 22px 6px rgba(255, 235, 59, 0.95);
-        border-color: #ffffff;
-        transform: scale(1.03);
+        box-shadow: 0 0 0 5px var(--gold);
+        transform: scale(1.04);
       }
     }
 
-    /* 底部留白區：讓邀請卡的「2026.11.21 太平72 酷力全開」紅布條自然呈現，或顯示精簡資訊列 */
-    .bottom-spacer {
-      height: 11.5vh;
+    @media (prefers-reduced-motion: reduce) {
+      .donor-card.newly-added { animation: none; box-shadow: 0 0 0 4px var(--gold); }
+      .sync-dot { animation: none; }
+    }
+
+    /* 底部標語列：邀請卡上的校慶標語與日期，貼在紅紙底板下緣 */
+    .board-footer {
       flex-shrink: 0;
-      display: flex;
-      align-items: flex-end;
-      justify-content: flex-end;
-      pointer-events: none;
-    }
-
-    body.layout-full .bottom-spacer {
-      height: 0.4vh;
-    }
-
-    /* 懸浮控制面板（滑鼠移到右下角或按空白鍵時顯示，平時完全隱形不干擾大屏） */
-    .floating-controls {
-      position: fixed;
-      bottom: 14px;
-      right: 16px;
-      z-index: 50;
+      height: 5.2vh;
       display: flex;
       align-items: center;
-      gap: 8px;
-      background: rgba(25, 10, 10, 0.88);
-      backdrop-filter: blur(8px);
-      border: 1.5px solid #ffd54f;
-      padding: 8px 14px;
-      border-radius: 999px;
-      opacity: 0.15;
-      transition: opacity 0.25s ease, transform 0.25s ease;
-      font-family: 'Noto Sans TC', sans-serif;
+      gap: 1.4em;
+      padding: 0 0.4vw;
+      color: var(--cream);
+      font-family: var(--kai);
+      font-weight: 700;
+      font-size: clamp(14px, 2.4vh, 32px);
+      letter-spacing: 0.08em;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+
+    .board-footer .footer-date {
+      color: var(--gold);
+      font-family: var(--sans);
+      font-weight: 900;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: 0.04em;
+    }
+
+    .board-footer .footer-thanks {
+      color: var(--gold-pale);
+      font-size: 0.82em;
+    }
+
+    body.layout-full .board-footer {
+      display: none;
+    }
+
+    /* 懸浮控制列：平時完全隱形不干擾大屏；滑鼠移到右下角、按空白鍵，或點一下圓章標題／底部標語列即顯示 */
+    .floating-controls {
+      position: fixed;
+      bottom: 12px;
+      right: 14px;
+      z-index: 50;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 6px;
+      max-width: calc(100vw - 28px);
+      background: #2a0c0e;
+      padding: 8px;
+      border-radius: 6px;
+      opacity: 0;
+      transition: opacity 0.2s ease;
     }
 
     .floating-controls:hover,
+    .floating-controls:focus-within,
     .floating-controls.visible {
       opacity: 1;
     }
 
     .ctrl-btn {
-      background: rgba(255, 255, 255, 0.14);
-      color: #fff;
-      border: 1px solid rgba(255, 213, 79, 0.5);
-      border-radius: 999px;
-      padding: 5px 12px;
+      background: #47191c;
+      color: var(--cream);
+      border: 0;
+      border-radius: 4px;
+      padding: 7px 12px;
+      font-family: var(--sans);
       font-size: 13px;
       font-weight: 700;
+      line-height: 1.2;
       cursor: pointer;
-      transition: all 0.15s;
+      transition: background-color 0.15s, color 0.15s;
       text-decoration: none;
       display: inline-flex;
       align-items: center;
-      gap: 4px;
+      white-space: nowrap;
     }
 
     .ctrl-btn:hover {
-      background: #ffd54f;
-      color: #1a0505;
+      background: var(--gold);
+      color: var(--ink);
+    }
+
+    .ctrl-btn:active {
+      transform: translateY(1px);
+    }
+
+    .ctrl-btn:focus-visible {
+      outline: 2px solid var(--gold);
+      outline-offset: 2px;
     }
 
     .ctrl-btn.active {
-      background: #c62020;
-      border-color: #ffd54f;
-      color: #fff;
+      background: var(--red);
+      color: #ffffff;
     }
 
-    /* 新捐款即時賀喜橫幅 (Toast) */
+    /* 新捐款即時賀喜橫幅：金底墨字的喜報 */
     .celebration-toast {
       position: fixed;
-      top: 10.5vh;
+      top: 11vh;
       left: 50%;
       transform: translateX(-50%) translateY(-30px);
       z-index: 100;
-      background: linear-gradient(90deg, #8e0e0e 0%, #d32f2f 50%, #8e0e0e 100%);
-      border: 3px solid #ffeb3b;
-      border-radius: 999px;
-      padding: 12px 36px;
-      color: #fff;
-      font-size: clamp(20px, 3.2vh, 42px);
-      font-weight: 900;
-      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.55), 0 0 25px rgba(255, 215, 0, 0.8);
+      max-width: 94vw;
+      background: var(--gold);
+      border-radius: 6px;
+      padding: 0.5em 1.2em;
+      color: var(--ink);
+      font-family: var(--kai);
+      font-size: clamp(20px, 3.4vh, 44px);
+      font-weight: 700;
+      box-shadow: 0 10px 28px rgba(40, 0, 0, 0.35);
       opacity: 0;
       pointer-events: none;
-      transition: all 0.45s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+      transition: opacity 0.35s ease, transform 0.45s cubic-bezier(0.18, 0.89, 0.32, 1.28);
       white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .celebration-toast.show {
@@ -495,98 +568,128 @@
     }
 
     .celebration-toast .highlight {
-      color: #ffeb3b;
-      margin: 0 8px;
-      text-decoration: underline;
-      text-underline-offset: 6px;
+      color: var(--red-deep);
+      font-family: var(--sans);
+      font-weight: 900;
+      margin: 0 0.25em;
     }
 
     /* 空資料提示 */
     .empty-state {
       margin: auto;
       text-align: center;
-      color: #8e1111;
-      font-size: 28px;
-      font-weight: 900;
+      color: var(--red-deep);
+      font-family: var(--kai);
+      font-size: clamp(20px, 3.4vh, 34px);
+      font-weight: 700;
+      direction: ltr;
+    }
+
+    /* 直式螢幕與手機：標題區改為兩列（校名一列、圓章與筆數一列），看板仍佔滿其餘高度 */
+    @media (max-width: 900px) {
+      .screen-wrapper { padding: 10px; }
+      .top-header {
+        flex-wrap: wrap;
+        row-gap: 8px;
+        padding: 10px 2px 8px;
+      }
+      .school-brand { flex: 1 1 100%; gap: 8px; }
+      .school-emblem { height: 40px; width: 40px; }
+      .school-name { font-size: clamp(15px, 4.4vw, 24px); letter-spacing: 0.02em; }
+      .event-subtitle { font-size: clamp(11px, 2.9vw, 15px); letter-spacing: 0; }
+      .medallion { --seal: clamp(34px, 9.4vw, 60px); }
+      .header-status { flex: 1 1 auto; }
+      .board-footer { height: 34px; font-size: 14px; letter-spacing: 0.04em; gap: 0.8em; }
+      .celebration-toast { white-space: normal; text-align: center; }
+    }
+
+    @media (max-width: 560px) {
+      .sync-indicator span:last-child { display: none; }
+      .board-footer .footer-thanks { display: none; }
     }
   </style>
 </head>
 <body>
   <!-- 邀請卡背景 -->
   <div class="bg-layer"></div>
-  <div class="bg-overlay"></div>
 
   <!-- 新捐款賀喜彈出橫幅 -->
-  <div id="celebrationToast" class="celebration-toast"></div>
+  <div id="celebrationToast" class="celebration-toast" role="status" aria-live="polite"></div>
 
   <!-- 單頁大屏主框架 -->
   <div class="screen-wrapper">
-    <!-- 頂部校徽與「捐 款 芳 名 錄」五圓金章 -->
-    <header class="top-header">
-      <div class="school-brand">
-        <img src="太平國小_校徽.png" alt="太平國小校徽" class="school-emblem" />
-        <div class="school-titles">
-          <div class="school-name">新竹縣關西鎮太平國民小學</div>
-          <div class="event-subtitle">72週年校慶「太平72 酷力全開」感恩芳名錄</div>
+    <div class="red-board">
+      <!-- 頂部校徽、校名與「捐 款 芳 名 錄」五枚圓章 -->
+      <header class="top-header">
+        <div class="school-brand">
+          <img src="太平國小_校徽.png" alt="太平國小校徽" class="school-emblem" />
+          <div class="school-titles">
+            <div class="school-name">新竹縣關西鎮太平國民小學</div>
+            <div class="event-subtitle">72週年校慶「太平72 酷力全開」感恩芳名錄</div>
+          </div>
         </div>
-      </div>
 
-      <div class="honor-medallions" aria-label="捐款芳名錄">
-        <div class="medallion">捐</div>
-        <div class="medallion">款</div>
-        <div class="medallion">芳</div>
-        <div class="medallion">名</div>
-        <div class="medallion">錄</div>
-      </div>
+        <h1 class="honor-medallions" aria-label="捐款芳名錄">
+          <span class="medallion"><span>捐</span></span>
+          <span class="medallion"><span>款</span></span>
+          <span class="medallion"><span>芳</span></span>
+          <span class="medallion"><span>名</span></span>
+          <span class="medallion"><span>錄</span></span>
+        </h1>
 
-      <div class="header-status">
-        <div class="donor-counter">
-          感恩芳名共 <strong id="totalCountEl">0</strong> 筆
+        <div class="header-status">
+          <div class="donor-counter">
+            感恩芳名共<strong id="totalCountEl">0</strong>筆
+          </div>
+          <div class="sync-indicator">
+            <span id="syncDot" class="sync-dot"></span>
+            <span id="syncStatusText">每 5 秒即時更新中</span>
+          </div>
         </div>
-        <div class="sync-indicator">
-          <span id="syncDot" class="sync-dot"></span>
-          <span id="syncStatusText">每 5 秒即時更新中</span>
-        </div>
-      </div>
-    </header>
+      </header>
 
-    <!-- 中央紅榜展示板（所有芳名錄呈現在同一頁、自動最佳化最大字級） -->
-    <main class="board-container" id="boardContainer">
-      <div id="donationsGrid" class="donations-grid style-vertical-red"></div>
-    </main>
+      <!-- 中央粉紅海報紙（所有芳名錄呈現在同一頁、自動最佳化最大字級） -->
+      <main class="board-container" id="boardContainer">
+        <div id="donationsGrid" class="donations-grid style-vertical-red"></div>
+      </main>
 
-    <!-- 底部預留給邀請卡「2026.11.21 太平72 酷力全開」紅布條 -->
-    <div class="bottom-spacer"></div>
+      <!-- 底部標語列（標準版面顯示；最大化版面時隱藏，把高度讓給芳名錄） -->
+      <footer class="board-footer">
+        <span class="footer-date">2026.11.21</span>
+        <span>太平72 酷力全開</span>
+        <span class="footer-thanks">感謝各界嘉賓與鄉親慷慨捐贈</span>
+      </footer>
+    </div>
   </div>
 
-  <!-- 右下角半透明快捷控制列（滑鼠移過去才會明顯顯示） -->
+  <!-- 右下角快捷控制列（滑鼠移過去才會明顯顯示） -->
   <div class="floating-controls" id="floatingControls">
-    <button class="ctrl-btn" id="btnToggleStyle" title="切換「傳統紅紙直書」或「現代橫式金卡」">
-      📜 樣式：傳統紅條
+    <button class="ctrl-btn" id="btnToggleStyle" title="切換「傳統紅條直書」或「喜慶橫式紅金卡」">
+      樣式：傳統紅條
     </button>
     <button class="ctrl-btn" id="btnToggleInk" title="切換紅條文字顏色（傳統墨黑字 / 喜慶金字）">
-      🖋️ 字色：傳統墨黑
+      字色：傳統墨黑
     </button>
-    <button class="ctrl-btn" id="btnToggleLayout" title="切換保留底部邀請卡標語或全版最大化">
-      🔍 版面：露出邀請卡底標
+    <button class="ctrl-btn" id="btnToggleLayout" title="切換標準版面（含校慶標語列）或全版最大化">
+      版面：標準
     </button>
-    <button class="ctrl-btn" id="btnFontMinus" title="稍微調小字體">A-</button>
-    <button class="ctrl-btn" id="btnFontPlus" title="稍微調大字體">A+</button>
+    <button class="ctrl-btn" id="btnFontMinus" title="稍微調小字體" aria-label="調小字體">A-</button>
+    <button class="ctrl-btn" id="btnFontPlus" title="稍微調大字體" aria-label="調大字體">A+</button>
     <button class="ctrl-btn" id="btnDemoCount" title="切換測試筆數（體驗 21筆 / 50筆 / 94筆 同頁自動縮放）">
-      🧪 預覽筆數
+      預覽筆數
     </button>
     <button class="ctrl-btn" id="btnSetGas" title="設定或檢視 Google GAS 雲端資料庫網址">
-      ☁️ 雲端設定
+      雲端設定
     </button>
     <a href="admin.html" target="_blank" class="ctrl-btn" title="開啟電腦端後台輸入頁面">
-      ⚙️ 後台輸入
+      後台輸入
     </a>
     <button class="ctrl-btn" id="btnFullscreen" title="切換全螢幕 (F11)">
-      ⛶ 全螢幕
+      全螢幕
     </button>
   </div>
 
-  <script src="shared.js"></script>
+  <script src="shared.js?v=20261112b"></script>
   <script>
     (function () {
       const gridEl = document.getElementById('donationsGrid');
@@ -598,7 +701,7 @@
 
       // 顯示狀態設定
       let settings = getDisplaySettings();
-      let inkMode = localStorage.getItem('tp72_ink_mode') || 'black'; // 'black' | 'gold'
+      let inkMode = settings.inkMode || localStorage.getItem('tp72_ink_mode') || 'black'; // 'black' | 'gold'
       let currentItems = [];
       let knownIds = new Set();
       let isFirstLoad = true;
@@ -610,6 +713,11 @@
        * 根據目前螢幕寬高 (W, H) 與總筆數 (N)，找出能讓每張芳名錄面積最大、字體最清楚的 (欄數 cols × 列數 rows)
        * 確保「全部呈現在同一頁」且「每一格大小完全相同，長輩不會比較大小」
        */
+      // 字級上限：筆數少時讓字跟著螢幕高度放大（原本固定上限 38px）
+      function maxCardFont(containerH) {
+        return Math.max(38, containerH * 0.085);
+      }
+
       function computeOptimalGrid(count, containerW, containerH, cardStyle) {
         if (count <= 0) return { cols: 1, rows: 1, fontSize: 24 };
 
@@ -654,7 +762,7 @@
           const finalW = (containerW - gap * (bestCols - 1)) / bestCols;
           const finalH = (containerH - gap * (bestRows - 1)) / bestRows;
           const rawFont = Math.min((finalW - 8) / 2.15, (finalH - 32) / 10.5);
-          const fontSize = Math.max(12, Math.min(38, rawFont * (settings.fontScaleAdjust || 1.0)));
+          const fontSize = Math.max(12, Math.min(maxCardFont(containerH), rawFont * (settings.fontScaleAdjust || 1.0)));
 
           return { cols: bestCols, rows: bestRows, fontSize, gap };
         } else {
@@ -684,7 +792,7 @@
           const finalW = (containerW - gap * (bestCols - 1)) / bestCols;
           const finalH = (containerH - gap * (bestRows - 1)) / bestRows;
           const rawFont = Math.min((finalH - 10) / 2.3, (finalW - 16) / 10.2);
-          const fontSize = Math.max(13, Math.min(36, rawFont * (settings.fontScaleAdjust || 1.0)));
+          const fontSize = Math.max(13, Math.min(maxCardFont(containerH), rawFont * (settings.fontScaleAdjust || 1.0)));
 
           return { cols: bestCols, rows: bestRows, fontSize, gap };
         }
@@ -726,6 +834,8 @@
         if (currentItems.length === 0) {
           gridEl.style.gridTemplateColumns = '1fr';
           gridEl.style.gridTemplateRows = '1fr';
+          gridEl.style.justifyContent = 'stretch';
+          gridEl.style.alignContent = 'stretch';
           gridEl.innerHTML = '<div class="empty-state">尚無捐款資料，請由後台輸入芳名錄</div>';
           return;
         }
@@ -736,12 +846,36 @@
 
         const cardStyle = settings.cardStyle || 'vertical-red';
         const { cols, rows, fontSize, gap } = computeOptimalGrid(currentItems.length, availW, availH, cardStyle);
-        const cellH = (availH - gap * (rows - 1)) / rows;
+        let cellH = (availH - gap * (rows - 1)) / rows;
+        const cellW = (availW - gap * (cols - 1)) / cols;
+
+        // 筆數少時：格子不再被拉到滿版，改用「剛好包住文字」的紅條尺寸並置中，
+        // 像實體紅條貼在粉紅紙中央。只會縮小格子，所以仍保證同一頁、每格等大。
+        const charLen = (t) => Array.from(String(t || '')).length;
+        let capW = cellW;
+        let capH = cellH;
+        if (cardStyle === 'vertical-red') {
+          const maxLen = Math.max(...currentItems.map((it) => Math.max(charLen(it.donor), charLen(it.displayContent || it.rawContent))));
+          capW = Math.min(cellW, fontSize * 3.4);
+          capH = Math.min(cellH, fontSize * 2.1 + 14 + Math.min(Math.max(maxLen, 8), 13) * fontSize * 1.05 + 12);
+        } else {
+          capW = Math.min(cellW, fontSize * 17);
+          capH = Math.min(cellH, fontSize * 3.6);
+        }
+        const widthCapped = capW < cellW - 0.5;
+        const heightCapped = capH < cellH - 0.5;
+        cellH = capH;
 
         gridEl.className = `donations-grid style-${cardStyle}`;
         gridEl.style.gap = `${gap}px`;
-        gridEl.style.gridTemplateColumns = `repeat(${cols}, minmax(0, 1fr))`;
-        gridEl.style.gridTemplateRows = `repeat(${rows}, minmax(0, 1fr))`;
+        gridEl.style.gridTemplateColumns = widthCapped
+          ? `repeat(${cols}, ${capW.toFixed(1)}px)`
+          : `repeat(${cols}, minmax(0, 1fr))`;
+        gridEl.style.gridTemplateRows = heightCapped
+          ? `repeat(${rows}, ${capH.toFixed(1)}px)`
+          : `repeat(${rows}, minmax(0, 1fr))`;
+        gridEl.style.justifyContent = widthCapped ? 'center' : 'stretch';
+        gridEl.style.alignContent = heightCapped ? 'center' : 'stretch';
         document.documentElement.style.setProperty('--card-font-size', `${fontSize.toFixed(1)}px`);
 
         const displayList = settings.sortOrder === 'input-desc'
@@ -765,15 +899,15 @@
                   <div class="label-col"><span>感</span><span>謝</span></div>
                 </div>
                 <div class="strip-body">
-                  <div class="vertical-col gift-col" style="${giftStyle}">${gift}</div>
-                  <div class="vertical-col donor-col" style="${donorStyle}">${donor}</div>
+                  <div class="vertical-col gift-col" style="${giftStyle}">${toVerticalPunctuation(gift)}</div>
+                  <div class="vertical-col donor-col" style="${donorStyle}">${toVerticalPunctuation(donor)}</div>
                 </div>
               </div>
             `;
           } else {
             const donorStyle = computeColumnFontStyle(item.donor, fontSize, cellH, false);
             return `
-              <div class="donor-card horizontal-card ${newClass}" data-id="${escapeHtml(item.id)}">
+              <div class="donor-card horizontal-card ${inkClass} ${newClass}" data-id="${escapeHtml(item.id)}">
                 <div class="h-top-row">
                   <span class="h-donor-name" style="${donorStyle}">${donor}</span>
                   <span class="h-thanks-tag">感謝捐贈</span>
@@ -802,7 +936,7 @@
         if (!newItems || newItems.length === 0) return;
         const latest = newItems[newItems.length - 1];
         const giftText = latest.displayContent || formatDonationDisplay(latest.rawContent, latest.type);
-        toastEl.innerHTML = `🎉 誠摯感謝 <span class="highlight">${escapeHtml(latest.donor)}</span> 慷慨捐贈 <span class="highlight">${escapeHtml(giftText)}</span>！`;
+        toastEl.innerHTML = `誠摯感謝 <span class="highlight">${escapeHtml(latest.donor)}</span> 慷慨捐贈 <span class="highlight">${escapeHtml(giftText)}</span>！`;
         toastEl.classList.add('show');
         if (toastTimeout) clearTimeout(toastTimeout);
         toastTimeout = setTimeout(() => {
@@ -847,6 +981,20 @@
       }
 
       /**
+       * 套用後台透過雲端送來的顯示設定（樣式、字色、版面、字級）。
+       * 只有後台送出「比上次更新」的設定時才套用，所以在大屏上用右下角控制列做的臨時調整不會被蓋掉。
+       */
+      function applyRemoteSettings(remote) {
+        if (!remote || !remote.updatedAt) return;
+        const lastStamp = Number(localStorage.getItem('tp72_remote_settings_stamp')) || 0;
+        if (Number(remote.updatedAt) <= lastStamp) return;
+        localStorage.setItem('tp72_remote_settings_stamp', String(remote.updatedAt));
+        settings = saveDisplaySettings(remote);
+        inkMode = settings.inkMode || inkMode;
+        renderBoard(currentItems);
+      }
+
+      /**
        * 每 5 秒從 GAS 或本機抓取最新資料
        */
       async function fetchLatestDonations() {
@@ -872,6 +1020,7 @@
           if (data && data.status === 'ok' && Array.isArray(data.items)) {
             syncDot.className = 'sync-dot';
             saveLocalDonations(data.items);
+            applyRemoteSettings(data.settings);
             applyIncomingData(data.items, '雲端即時連線・每5秒更新');
           } else {
             throw new Error(data.message || 'GAS 回傳格式異常');
@@ -888,11 +1037,11 @@
        */
       function updateControlButtonsText() {
         document.getElementById('btnToggleStyle').textContent =
-          settings.cardStyle === 'vertical-red' ? '📜 樣式：傳統紅條' : '🪪 樣式：喜慶橫卡';
+          settings.cardStyle === 'vertical-red' ? '樣式：傳統紅條' : '樣式：喜慶橫卡';
         document.getElementById('btnToggleInk').textContent =
-          inkMode === 'gold' ? '🖋️ 字色：喜慶金字' : '🖋️ 字色：傳統墨黑';
+          inkMode === 'gold' ? '字色：喜慶金字' : '字色：傳統墨黑';
         document.getElementById('btnToggleLayout').textContent =
-          settings.headerMode === 'full' ? '🔍 版面：全螢幕最大化' : '🔍 版面：露出邀請卡底標';
+          settings.headerMode === 'full' ? '版面：最大化' : '版面：標準';
       }
 
       // 綁定控制列按鈕事件
@@ -905,6 +1054,7 @@
       document.getElementById('btnToggleInk').addEventListener('click', () => {
         inkMode = inkMode === 'black' ? 'gold' : 'black';
         localStorage.setItem('tp72_ink_mode', inkMode);
+        settings = saveDisplaySettings({ inkMode });
         renderBoard(currentItems);
       });
 
@@ -929,22 +1079,22 @@
       document.getElementById('btnDemoCount').addEventListener('click', (e) => {
         demoSliceMode = (demoSliceMode + 1) % 4;
         if (demoSliceMode === 0) {
-          e.target.textContent = '🧪 預覽筆數';
+          e.target.textContent = '預覽筆數';
           e.target.classList.remove('active');
           isFirstLoad = true;
           fetchLatestDonations();
         } else if (demoSliceMode === 1) {
-          e.target.textContent = '🧪 預覽：21筆 (照片紅榜)';
+          e.target.textContent = '預覽：21筆 (照片紅榜)';
           e.target.classList.add('active');
           renderBoard(DEMO_71_DONATIONS.slice(0, 21));
           syncStatusText.textContent = '預覽模式：21筆';
         } else if (demoSliceMode === 2) {
-          e.target.textContent = '🧪 預覽：50筆 (中型版面)';
+          e.target.textContent = '預覽：50筆 (中型版面)';
           e.target.classList.add('active');
           renderBoard(DEMO_71_DONATIONS.slice(0, 50));
           syncStatusText.textContent = '預覽模式：50筆';
         } else if (demoSliceMode === 3) {
-          e.target.textContent = '🧪 預覽：94筆 (71週年全數同頁)';
+          e.target.textContent = '預覽：94筆 (71週年全數同頁)';
           e.target.classList.add('active');
           renderBoard(DEMO_71_DONATIONS);
           syncStatusText.textContent = '預覽模式：94筆同頁';
@@ -969,6 +1119,18 @@
         }
       });
 
+      // 控制列顯示切換：按空白鍵，或點一下底部標語列（觸控裝置沒有滑鼠懸停時使用）
+      const floatingControls = document.getElementById('floatingControls');
+      document.addEventListener('keydown', (e) => {
+        if (e.code === 'Space' && !(e.target.closest && e.target.closest('button, a, input'))) {
+          e.preventDefault();
+          floatingControls.classList.toggle('visible');
+        }
+      });
+      document.querySelectorAll('.board-footer, .honor-medallions').forEach((el) => {
+        el.addEventListener('click', () => floatingControls.classList.toggle('visible'));
+      });
+
       // 視窗大小改變時立即重新計算最佳網格與字級
       window.addEventListener('resize', () => {
         renderBoard(currentItems);
@@ -983,6 +1145,7 @@
             applyIncomingData(msg.payload, '後台即時推播');
           } else if (msg.type === 'settings_updated') {
             settings = getDisplaySettings();
+            inkMode = settings.inkMode || inkMode;
             renderBoard(currentItems);
           } else if (msg.type === 'gas_url_updated') {
             fetchLatestDonations();
@@ -995,6 +1158,7 @@
           applyIncomingData(getLocalDonations(), '後台即時同步');
         } else if (e.key === TP72_STORAGE_KEYS.SETTINGS) {
           settings = getDisplaySettings();
+          inkMode = settings.inkMode || inkMode;
           renderBoard(currentItems);
         }
       });
