@@ -23,12 +23,14 @@ function formatDonationDisplay(rawInput, typeHint) {
   const str = String(rawInput || '').trim();
   if (!str) return '';
 
-  // 移除逗號、空白、「元」、「禮金」、「$」等常見贅字以判斷是否為純數字金額
-  const cleanedNumStr = str.replace(/[,，\s$＄元整禮金新台幣NT]/gi, '');
+  // 移除逗號、空白、「元」、「禮金」、「補助款」、「$」等常見贅字以判斷是否為純數字金額
+  const cleanedNumStr = str.replace(/[,，\s$＄元整禮金補助款新台幣NT]/gi, '');
   if (/^\d+$/.test(cleanedNumStr) && typeHint !== '物資') {
     const num = parseInt(cleanedNumStr, 10);
     if (num > 0 && num < 1000000000) {
-      return '禮金' + numberToTraditionalChinese(num) + '元整';
+      // 補助類別寫成「補助壹萬元整」，其餘為「禮金壹萬元整」
+      const prefix = typeHint === '補助' ? '補助' : '禮金';
+      return prefix + numberToTraditionalChinese(num) + '元整';
     }
   }
   return str;
@@ -98,16 +100,27 @@ const TP72_VERTICAL_PUNCT = {
   '—': '︱', '－': '︱', '-': '︱', '–': '︱'
 };
 
+/**
+ * 紅條條頭的兩個字：補助顯示「補助」，禮金與物資顯示「捐贈」
+ */
+function donationVerb(type) {
+  return type === '補助' ? '補助' : '捐贈';
+}
+
 function toVerticalPunctuation(text) {
   return Array.from(String(text || '')).map((ch) => TP72_VERTICAL_PUNCT[ch] || ch).join('');
 }
 
 /**
- * 判斷輸入內容是「禮金」還是「物資」
+ * 判斷輸入內容是「禮金」、「物資」還是「補助」
+ * （補助無法從數字看出來，後台由承辦人點選；這裡只認得以「補助」開頭的文字）
  */
 function detectDonationType(rawInput) {
   const str = String(rawInput || '').trim();
-  const cleanedNumStr = str.replace(/[,，\s$＄元整禮金新台幣NT]/gi, '');
+  if (str.startsWith('補助')) {
+    return '補助';
+  }
+  const cleanedNumStr = str.replace(/[,，\s$＄元整禮金補助款新台幣NT]/gi, '');
   if (/^\d+$/.test(cleanedNumStr)) {
     return '禮金';
   }

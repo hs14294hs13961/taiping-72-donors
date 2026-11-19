@@ -279,7 +279,7 @@
 
     /* ==========================================================
        樣式 A：傳統紅條直書 (vertical-red)
-       金色條頭「感謝／捐贈」，右欄直書捐款人、左欄直書禮金或物資
+       金色條頭「感謝／捐贈」（補助類別為「感謝／補助」），右欄直書捐款人、左欄直書禮金、補助或物資
        ========================================================== */
     .donations-grid.style-vertical-red {
       direction: rtl; /* 傳統紅榜由右至左排列！也可切換由左至右 */
@@ -689,7 +689,7 @@
     </button>
   </div>
 
-  <script src="shared.js?v=20261112b"></script>
+  <script src="shared.js?v=20261119b"></script>
   <script>
     (function () {
       const gridEl = document.getElementById('donationsGrid');
@@ -888,6 +888,7 @@
           const isNew = highlightIds.has(String(item.id));
           const newClass = isNew ? 'newly-added' : '';
           const inkClass = inkMode === 'gold' ? 'gold-ink' : '';
+          const verb = donationVerb(item.type);
 
           if (cardStyle === 'vertical-red') {
             const donorStyle = computeColumnFontStyle(item.donor, fontSize, cellH, true);
@@ -895,7 +896,7 @@
             return `
               <div class="donor-card vertical-red ${inkClass} ${newClass}" data-id="${escapeHtml(item.id)}">
                 <div class="strip-top-labels">
-                  <div class="label-col"><span>捐</span><span>贈</span></div>
+                  <div class="label-col"><span>${verb[0]}</span><span>${verb[1]}</span></div>
                   <div class="label-col"><span>感</span><span>謝</span></div>
                 </div>
                 <div class="strip-body">
@@ -910,7 +911,7 @@
               <div class="donor-card horizontal-card ${inkClass} ${newClass}" data-id="${escapeHtml(item.id)}">
                 <div class="h-top-row">
                   <span class="h-donor-name" style="${donorStyle}">${donor}</span>
-                  <span class="h-thanks-tag">感謝捐贈</span>
+                  <span class="h-thanks-tag">感謝${verb}</span>
                 </div>
                 <div class="h-gift-row">${gift}</div>
               </div>
@@ -936,7 +937,7 @@
         if (!newItems || newItems.length === 0) return;
         const latest = newItems[newItems.length - 1];
         const giftText = latest.displayContent || formatDonationDisplay(latest.rawContent, latest.type);
-        toastEl.innerHTML = `誠摯感謝 <span class="highlight">${escapeHtml(latest.donor)}</span> 慷慨捐贈 <span class="highlight">${escapeHtml(giftText)}</span>！`;
+        toastEl.innerHTML = `誠摯感謝 <span class="highlight">${escapeHtml(latest.donor)}</span> ${latest.type === '補助' ? '補助' : '慷慨捐贈'} <span class="highlight">${escapeHtml(giftText)}</span>！`;
         toastEl.classList.add('show');
         if (toastTimeout) clearTimeout(toastTimeout);
         toastTimeout = setTimeout(() => {

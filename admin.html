@@ -343,7 +343,7 @@
     /* 統計：一個容器分三欄 */
     .stats-bar {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(4, 1fr);
       border: 1px solid var(--border);
       border-radius: var(--radius);
       margin-bottom: 20px;
@@ -428,6 +428,44 @@
     }
     .badge-cash { background: var(--tint); color: var(--tint-ink); }
     .badge-goods { background: var(--neutral); color: #3f3432; }
+    .badge-grant { background: #fff1c9; color: #5f4200; }
+
+    /* 類別選擇：三個並排的選項 */
+    .type-group { border: 0; padding: 0; min-width: 0; }
+    .type-options {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+    }
+    .type-option { position: relative; cursor: pointer; }
+    .type-option input {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      margin: 0;
+      cursor: pointer;
+    }
+    .type-option span {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 40px;
+      border: 1px solid var(--control);
+      border-radius: var(--radius-control);
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text);
+      background: var(--surface);
+      transition: background-color 0.12s, border-color 0.12s, color 0.12s;
+    }
+    .type-option:hover span { background: var(--neutral); }
+    .type-option input:checked + span {
+      background: var(--red);
+      border-color: var(--red);
+      color: #ffffff;
+    }
+    .type-option input:focus-visible + span { outline: 2px solid var(--red); outline-offset: 2px; }
+    .type-hint { margin-top: 6px; }
 
     .list-footer {
       display: flex;
@@ -453,6 +491,10 @@
       .card { padding: 16px; margin-bottom: 16px; }
       .form-with-preview { grid-template-columns: minmax(0, 1fr) 84px; gap: 12px; }
       .stat-item { padding: 10px 10px; }
+      .stats-bar { grid-template-columns: 1fr 1fr; }
+      .stat-item:nth-child(3) { border-left: 0; }
+      .stat-item:nth-child(n+3) { border-top: 1px solid var(--border); }
+      .type-option span { min-height: 44px; }
       .stat-value { font-size: 19px; }
       .stat-item:first-child .stat-value { font-size: 22px; }
       .search-input { width: 100%; min-height: 44px; font-size: 16px; }
@@ -501,7 +543,7 @@
     <div>
       <div class="card">
         <div class="card-header">
-          <h2 class="card-title" id="formTitle">新增捐款 / 捐贈物資</h2>
+          <h2 class="card-title" id="formTitle">新增捐款 / 補助 / 捐贈物資</h2>
           <button class="btn btn-small" id="btnCancelEdit" style="display:none;">取消修改</button>
         </div>
 
@@ -532,9 +574,19 @@
                 </div>
               </div>
 
+              <fieldset class="form-group type-group">
+                <legend class="form-label">類別</legend>
+                <div class="type-options">
+                  <label class="type-option"><input type="radio" name="donationType" value="禮金" checked /><span>禮金</span></label>
+                  <label class="type-option"><input type="radio" name="donationType" value="補助" /><span>補助</span></label>
+                  <label class="type-option"><input type="radio" name="donationType" value="物資" /><span>物資</span></label>
+                </div>
+                <span class="form-hint type-hint">輸入數字會自動選「禮金」、輸入文字會自動選「物資」；補助款請手動點選「補助」</span>
+              </fieldset>
+
               <div class="form-group">
                 <label class="form-label" for="inputRaw">
-                  捐款金額或捐贈物資
+                  金額或物資內容
                   <span class="form-hint">純數字會自動轉成國字大寫；物資請直接輸入品名數量</span>
                 </label>
                 <input
@@ -576,7 +628,7 @@
             <div class="preview-col" aria-label="大屏紅條即時預覽">
               <div class="preview-strip">
                 <div class="ps-labels">
-                  <div><span>捐</span><span>贈</span></div>
+                  <div id="prevVerb"><span>捐</span><span>贈</span></div>
                   <div><span>感</span><span>謝</span></div>
                 </div>
                 <div class="ps-body">
@@ -584,7 +636,7 @@
                   <div class="ps-col" id="prevDonorText">捐款人芳名</div>
                 </div>
               </div>
-              <p class="preview-caption">大屏紅條預覽<br /><span id="prevTypeBadge">禮金 / 物資</span></p>
+              <p class="preview-caption">大屏紅條預覽<br /><span id="prevTypeBadge">禮金 / 補助 / 物資</span></p>
             </div>
           </div>
 
@@ -653,6 +705,10 @@
           <div class="stat-value" id="statTotalCash">NT$ 0</div>
         </div>
         <div class="stat-item">
+          <div class="stat-label">補助款累計</div>
+          <div class="stat-value" id="statTotalGrant">NT$ 0</div>
+        </div>
+        <div class="stat-item">
           <div class="stat-label">物資捐贈筆數</div>
           <div class="stat-value" id="statGoodsCount">0 筆</div>
         </div>
@@ -689,7 +745,7 @@
     </div>
   </div>
 
-  <script src="shared.js?v=20261112b"></script>
+  <script src="shared.js?v=20261119b"></script>
   <script>
     (function () {
       const inputDonor = document.getElementById('inputDonor');
@@ -710,6 +766,7 @@
       const statTotalCount = document.getElementById('statTotalCount');
       const statTotalCash = document.getElementById('statTotalCash');
       const statGoodsCount = document.getElementById('statGoodsCount');
+      const statTotalGrant = document.getElementById('statTotalGrant');
       const inputGasUrl = document.getElementById('inputGasUrl');
       const connectionBadge = document.getElementById('connectionBadge');
       const lastSyncTimeText = document.getElementById('lastSyncTimeText');
@@ -737,11 +794,33 @@
         }
       }
 
-      // 當輸入金額或物資時，自動轉換為「禮金壹仟元整」等國字大寫
+      // 類別：預設依輸入自動判斷（數字＝禮金、文字＝物資），承辦人手動點選後就固定不再自動切換
+      const typeRadios = Array.from(document.querySelectorAll('input[name="donationType"]'));
+      let typeManuallyChosen = false;
+
+      function getSelectedType() {
+        const checked = typeRadios.find(r => r.checked);
+        return checked ? checked.value : '禮金';
+      }
+
+      function setSelectedType(type) {
+        typeRadios.forEach(r => { r.checked = (r.value === type); });
+      }
+
+      typeRadios.forEach(r => r.addEventListener('change', () => {
+        typeManuallyChosen = true;
+        displayManuallyEdited = false;
+        updateLivePreview();
+      }));
+
+      // 當輸入金額或物資時，自動轉換為「禮金壹仟元整」「補助壹萬元整」等國字大寫
       function updateLivePreview() {
         const donorVal = inputDonor.value.trim();
         const rawVal = inputRaw.value.trim();
-        const type = detectDonationType(rawVal);
+        if (!typeManuallyChosen && rawVal) {
+          setSelectedType(detectDonationType(rawVal));
+        }
+        const type = getSelectedType();
 
         if (!displayManuallyEdited) {
           inputDisplay.value = formatDonationDisplay(rawVal, type);
@@ -750,7 +829,9 @@
         prevDonorText.textContent = toVerticalPunctuation(donorVal) || '捐款人芳名';
         prevDonorText.classList.toggle('is-placeholder', !donorVal);
         setGiftPreview();
-        prevTypeBadge.textContent = !rawVal ? '禮金 / 物資' : (type === '禮金' ? '類別：禮金' : '類別：物資');
+        prevTypeBadge.textContent = '類別：' + type;
+        const verb = donationVerb(type);
+        document.getElementById('prevVerb').innerHTML = `<span>${verb[0]}</span><span>${verb[1]}</span>`;
         fitPreviewCol(prevDonorText);
       }
 
@@ -801,23 +882,37 @@
         });
       });
 
+      // 每筆的類別：以存下來的類別為準；舊資料沒有類別時，數字算禮金、文字算物資
+      function itemType(item) {
+        if (item.type === '補助' || item.type === '物資' || item.type === '禮金') return item.type;
+        return detectDonationType(item.rawContent);
+      }
+
+      const TYPE_BADGE_CLASS = { '禮金': 'badge-cash', '補助': 'badge-grant', '物資': 'badge-goods' };
+
       // 計算統計數字並渲染表格
       function renderTable() {
         const keyword = searchInput.value.trim().toLowerCase();
         let totalCash = 0;
+        let totalGrant = 0;
         let goodsCount = 0;
 
         donations.forEach(item => {
-          const cleaned = String(item.rawContent || '').replace(/[,，\s$＄元整禮金新台幣NT]/gi, '');
-          if (/^\d+$/.test(cleaned)) {
-            totalCash += parseInt(cleaned, 10);
-          } else {
+          const type = itemType(item);
+          const cleaned = String(item.rawContent || '').replace(/[,，\s$＄元整禮金補助款新台幣NT]/gi, '');
+          const amount = /^\d+$/.test(cleaned) ? parseInt(cleaned, 10) : 0;
+          if (type === '物資') {
             goodsCount++;
+          } else if (type === '補助') {
+            totalGrant += amount;
+          } else {
+            totalCash += amount;
           }
         });
 
         statTotalCount.textContent = `${donations.length} 筆`;
         statTotalCash.textContent = `NT$ ${totalCash.toLocaleString('zh-TW')}`;
+        statTotalGrant.textContent = `NT$ ${totalGrant.toLocaleString('zh-TW')}`;
         statGoodsCount.textContent = `${goodsCount} 筆`;
 
         const filtered = donations.map((item, idx) => ({ ...item, order: idx + 1 })).filter(item => {
@@ -838,15 +933,13 @@
         }
 
         donorTableBody.innerHTML = reversed.map(item => {
-          const isCash = item.type === '禮金' || /^\d+$/.test(String(item.rawContent || '').replace(/[,，\s]/g, ''));
+          const type = itemType(item);
           return `
             <tr>
               <td class="order"><input type="number" class="order-input" min="1" max="${donations.length}" value="${item.order}" aria-label="${escapeHtml(item.donor)} 在大屏上的順序" onchange="window.moveDonation('${escapeHtml(item.id)}', this.value)" /></td>
               <td class="donor">${escapeHtml(item.donor)}</td>
               <td class="type">
-                <span class="badge ${isCash ? 'badge-cash' : 'badge-goods'}">
-                  ${isCash ? '禮金' : '物資'}
-                </span>
+                <span class="badge ${TYPE_BADGE_CLASS[type]}">${type}</span>
               </td>
               <td class="gift">${escapeHtml(item.displayContent || item.rawContent)}</td>
               <td class="actions">
@@ -872,7 +965,7 @@
         e.preventDefault();
         const donor = inputDonor.value.trim();
         const rawContent = inputRaw.value.trim();
-        const type = detectDonationType(rawContent);
+        const type = getSelectedType();
         const displayContent = inputDisplay.value.trim() || formatDonationDisplay(rawContent, type);
         const editingId = editIdInput.value.trim();
 
@@ -924,7 +1017,9 @@
         inputRaw.value = '';
         inputDisplay.value = '';
         displayManuallyEdited = false;
-        formTitle.textContent = '新增捐款 / 捐贈物資';
+        typeManuallyChosen = false;
+        setSelectedType('禮金');
+        formTitle.textContent = '新增捐款 / 補助 / 捐贈物資';
         btnSubmit.textContent = '立即登錄並同步至大屏 (Enter)';
         btnCancelEdit.style.display = 'none';
         updateLivePreview();
@@ -942,6 +1037,8 @@
         inputRaw.value = item.rawContent;
         inputDisplay.value = item.displayContent || formatDonationDisplay(item.rawContent, item.type);
         displayManuallyEdited = true;
+        setSelectedType(itemType(item));
+        typeManuallyChosen = true;
         formTitle.textContent = `修改芳名錄：${item.donor}`;
         btnSubmit.textContent = '儲存修改並更新大屏';
         btnCancelEdit.style.display = 'inline-flex';
